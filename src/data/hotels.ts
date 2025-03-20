@@ -6,13 +6,14 @@ export interface Hotel {
   etoiles: number;
   image: string;
   prix: string;
-  ville: string;
+  ville: string; // This was missing in the hotel objects but present in the interface
   distance: string;
-  stadeId: string;
+  stade_id?: string; // Backend uses stade_id
+  stadeId?: string;  // Frontend uses stadeId
 }
 
+// Sample hotel data - ensure all have the ville property
 export const hotels: Hotel[] = [
-  // Hôtels près du Complexe Mohammed V (Casablanca)
   {
     id: "movenpick-casablanca",
     nom: "Mövenpick Hotel Casablanca",
@@ -20,6 +21,7 @@ export const hotels: Hotel[] = [
     etoiles: 5,
     image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop",
     prix: "1500 DH",
+    ville: "Casablanca", // Added ville
     distance: "2.5 km",
     stadeId: "complexe-mohamed-v"
   },
@@ -166,3 +168,5 @@ export const hotels: Hotel[] = [
     stadeId: "stade-larache"
   }
 ];
+
+export default hotels;

@@ -24,7 +24,9 @@ const StadeHotels: React.FC<StadeHotelsProps> = ({ hotels, stadeId }) => {
       try {
         // Use the Laravel API endpoint to get hotels by stade
         const response = await axios.get(`http://localhost:8000/api/stades/${stadeId}/hotels`);
-        setStadeHotels(response.data);
+        // Make sure the received data has all required properties
+        const apiHotels: Hotel[] = response.data;
+        setStadeHotels(apiHotels);
       } catch (err) {
         console.error('Error fetching hotels:', err);
         setError('Unable to load hotels data. Using local data instead.');
