@@ -6,7 +6,7 @@ export interface Hotel {
   etoiles: number;
   image: string;
   prix: string;
-  ville: string; // This was missing in the hotel objects but present in the interface
+  ville: string; 
   distance: string;
   stade_id?: string; // Backend uses stade_id
   stadeId?: string;  // Frontend uses stadeId
@@ -21,7 +21,7 @@ export const hotels: Hotel[] = [
     etoiles: 5,
     image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop",
     prix: "1500 DH",
-    ville: "Casablanca", // Added ville
+    ville: "Casablanca",
     distance: "2.5 km",
     stadeId: "complexe-mohamed-v"
   },
@@ -32,6 +32,7 @@ export const hotels: Hotel[] = [
     etoiles: 5,
     image: "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=2070&auto=format&fit=crop",
     prix: "1800 DH",
+    ville: "Casablanca",
     distance: "3 km",
     stadeId: "complexe-mohamed-v"
   },
@@ -44,6 +45,7 @@ export const hotels: Hotel[] = [
     etoiles: 5,
     image: "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=2070&auto=format&fit=crop",
     prix: "1600 DH",
+    ville: "Rabat",
     distance: "4 km",
     stadeId: "stade-moulay-abdellah"
   },
@@ -54,6 +56,7 @@ export const hotels: Hotel[] = [
     etoiles: 4,
     image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80&w=2070&auto=format&fit=crop",
     prix: "1200 DH",
+    ville: "Rabat",
     distance: "5.5 km",
     stadeId: "stade-moulay-abdellah"
   },
@@ -66,6 +69,7 @@ export const hotels: Hotel[] = [
     etoiles: 5,
     image: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?q=80&w=2049&auto=format&fit=crop",
     prix: "1400 DH",
+    ville: "Tanger",
     distance: "3.2 km",
     stadeId: "stade-ibn-batouta"
   },
@@ -76,6 +80,7 @@ export const hotels: Hotel[] = [
     etoiles: 5,
     image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=2070&auto=format&fit=crop",
     prix: "2000 DH",
+    ville: "Tanger",
     distance: "4 km",
     stadeId: "stade-ibn-batouta"
   },
@@ -88,6 +93,7 @@ export const hotels: Hotel[] = [
     etoiles: 4,
     image: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?q=80&w=2070&auto=format&fit=crop",
     prix: "1200 DH",
+    ville: "Agadir",
     distance: "2 km",
     stadeId: "stade-adrar"
   },
@@ -98,6 +104,7 @@ export const hotels: Hotel[] = [
     etoiles: 5,
     image: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?q=80&w=2073&auto=format&fit=crop",
     prix: "1700 DH",
+    ville: "Agadir",
     distance: "3.5 km",
     stadeId: "stade-adrar"
   },
@@ -110,6 +117,7 @@ export const hotels: Hotel[] = [
     etoiles: 5,
     image: "https://images.unsplash.com/photo-1550141016-5d4cc7f1e7c9?q=80&w=2070&auto=format&fit=crop",
     prix: "2500 DH",
+    ville: "Marrakech",
     distance: "3 km",
     stadeId: "stade-marrakech"
   },
@@ -120,6 +128,7 @@ export const hotels: Hotel[] = [
     etoiles: 5,
     image: "https://images.unsplash.com/photo-1617870952348-7524edfb61b7?q=80&w=2070&auto=format&fit=crop",
     prix: "2200 DH",
+    ville: "Marrakech",
     distance: "4.5 km",
     stadeId: "stade-marrakech"
   },
@@ -132,6 +141,7 @@ export const hotels: Hotel[] = [
     etoiles: 5,
     image: "https://images.unsplash.com/photo-1548386135-b70b1d4e144d?q=80&w=2063&auto=format&fit=crop",
     prix: "1900 DH",
+    ville: "Fès",
     distance: "4 km",
     stadeId: "stade-fes"
   },
@@ -142,6 +152,7 @@ export const hotels: Hotel[] = [
     etoiles: 5,
     image: "https://images.unsplash.com/photo-1604528089203-6d0f82bd54f8?q=80&w=2070&auto=format&fit=crop",
     prix: "2100 DH",
+    ville: "Fès",
     distance: "5 km",
     stadeId: "stade-fes"
   },
@@ -154,6 +165,7 @@ export const hotels: Hotel[] = [
     etoiles: 4,
     image: "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?q=80&w=2070&auto=format&fit=crop",
     prix: "950 DH",
+    ville: "Larache",
     distance: "1.5 km",
     stadeId: "stade-larache"
   },
@@ -164,6 +176,7 @@ export const hotels: Hotel[] = [
     etoiles: 4,
     image: "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?q=80&w=2074&auto=format&fit=crop",
     prix: "1100 DH",
+    ville: "Larache",
     distance: "2 km",
     stadeId: "stade-larache"
   }
