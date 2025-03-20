@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
@@ -12,15 +11,28 @@ import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AdminLogin from '@/components/AdminLogin';
+import { HotelFormDialog } from '@/components/HotelFormDialog';
 
-// Define a type for different admin sections
+// Define types for different admin sections and hotel data
 type AdminSection = 'dashboard' | 'matches' | 'stades' | 'equipes' | 'utilisateurs' | 'hotels';
+
+type NewHotelData = {
+  nom: string;
+  description: string;
+  etoiles: number;
+  image: string;
+  prix: string;
+  ville: string;
+  distance: string;
+  stadeId: string;
+};
 
 const Dashboard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeSection, setActiveSection] = useState<AdminSection>('dashboard');
+  const [showHotelForm, setShowHotelForm] = useState(false);
+  const [hotelsList, setHotelsList] = useState(hotels);
   const { toast } = useToast();
   
   // Data for the pie chart
@@ -52,10 +64,19 @@ const Dashboard = () => {
     }
   };
 
-  const handleAddItem = (section: AdminSection) => {
+  const handleAddHotel = (hotelData: NewHotelData) => {
+    // Create a unique ID based on the hotel name
+    const newHotel = {
+      id: hotelData.nom.toLowerCase().replace(/\s+/g, '-'),
+      ...hotelData
+    };
+    
+    // Add the new hotel to the list
+    setHotelsList([...hotelsList, newHotel]);
+    
     toast({
-      title: `Ajouter ${section}`,
-      description: `Fonctionnalité d'ajout de ${section} à venir`,
+      title: "Hôtel ajouté",
+      description: `L'hôtel ${hotelData.nom} a été ajouté avec succès.`,
     });
   };
   
@@ -192,14 +213,9 @@ const Dashboard = () => {
   // Matches section content
   const renderMatchesContent = () => (
     <div className="flex flex-col space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Matches</h1>
-          <p className="text-muted-foreground">Gestion des matches de la CAN 2025</p>
-        </div>
-        <Button onClick={() => handleAddItem('matches')}>
-          <Plus className="mr-2 h-4 w-4" /> Ajouter un match
-        </Button>
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">Matches</h1>
+        <p className="text-muted-foreground">Gestion des matches de la CAN 2025</p>
       </div>
       
       <Card>
@@ -231,14 +247,9 @@ const Dashboard = () => {
   // Stades section content
   const renderStadesContent = () => (
     <div className="flex flex-col space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Stades</h1>
-          <p className="text-muted-foreground">Gestion des stades de la CAN 2025</p>
-        </div>
-        <Button onClick={() => handleAddItem('stades')}>
-          <Plus className="mr-2 h-4 w-4" /> Ajouter un stade
-        </Button>
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">Stades</h1>
+        <p className="text-muted-foreground">Gestion des stades de la CAN 2025</p>
       </div>
       
       <Card>
@@ -269,14 +280,9 @@ const Dashboard = () => {
   // Equipes section content
   const renderEquipesContent = () => (
     <div className="flex flex-col space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Équipes</h1>
-          <p className="text-muted-foreground">Gestion des équipes de la CAN 2025</p>
-        </div>
-        <Button onClick={() => handleAddItem('equipes')}>
-          <Plus className="mr-2 h-4 w-4" /> Ajouter une équipe
-        </Button>
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">Équipes</h1>
+        <p className="text-muted-foreground">Gestion des équipes de la CAN 2025</p>
       </div>
       
       <Card>
@@ -312,9 +318,6 @@ const Dashboard = () => {
           <h1 className="text-3xl font-bold tracking-tight">Utilisateurs</h1>
           <p className="text-muted-foreground">Gestion des utilisateurs administrateurs</p>
         </div>
-        <Button onClick={() => handleAddItem('utilisateurs')}>
-          <Plus className="mr-2 h-4 w-4" /> Ajouter un utilisateur
-        </Button>
       </div>
       
       <Card>
@@ -348,7 +351,7 @@ const Dashboard = () => {
           <h1 className="text-3xl font-bold tracking-tight">Hôtels</h1>
           <p className="text-muted-foreground">Gestion des hôtels partenaires</p>
         </div>
-        <Button onClick={() => handleAddItem('hotels')}>
+        <Button onClick={() => setShowHotelForm(true)}>
           <Plus className="mr-2 h-4 w-4" /> Ajouter un hôtel
         </Button>
       </div>
@@ -356,11 +359,11 @@ const Dashboard = () => {
       <Card>
         <CardHeader>
           <CardTitle>Liste des Hôtels</CardTitle>
-          <CardDescription>Total: {hotels.length} hôtels partenaires</CardDescription>
+          <CardDescription>Total: {hotelsList.length} hôtels partenaires</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {hotels.map((hotel) => (
+            {hotelsList.map((hotel) => (
               <div key={hotel.id} className="flex items-center justify-between border-b pb-2">
                 <div className="flex items-center space-x-3">
                   <div className="font-medium">
@@ -376,6 +379,12 @@ const Dashboard = () => {
           </div>
         </CardContent>
       </Card>
+      
+      <HotelFormDialog 
+        open={showHotelForm} 
+        onOpenChange={setShowHotelForm} 
+        onSubmit={handleAddHotel} 
+      />
     </div>
   );
 
