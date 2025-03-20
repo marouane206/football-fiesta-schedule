@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from '@/components/Navbar';
@@ -15,12 +14,15 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import StadeHotels from '@/components/StadeHotels';
+import { getHotels } from '@/pages/Dashboard';
 
 const StadeDetail = () => {
   const { id } = useParams<{ id: string }>();
   const stade = stades.find(s => s.id === id);
   const stadeMatches = matches.filter(m => m.stade === id);
-  const stadeHotels = hotels.filter(h => h.stadeId === id);
+  
+  const allHotels = getHotels ? getHotels() : hotels;
+  const stadeHotels = allHotels.filter(h => h.stadeId === id);
   
   if (!stade) {
     return (
@@ -100,7 +102,6 @@ const StadeDetail = () => {
               </div>
             </motion.div>
             
-            {/* Tabs for Matches and Hotels */}
             <Tabs defaultValue="matches" className="mb-12">
               <TabsList className="mb-6">
                 <TabsTrigger value="matches">Matchs</TabsTrigger>
@@ -124,7 +125,7 @@ const StadeDetail = () => {
               </TabsContent>
               
               <TabsContent value="hotels">
-                <StadeHotels hotels={stadeHotels} />
+                <StadeHotels hotels={stadeHotels} stadeId={id || ''} />
               </TabsContent>
             </Tabs>
           </div>
@@ -172,7 +173,6 @@ const StadesList = () => {
       
       <main className="flex-grow container mx-auto px-6 md:px-10 pb-16">
         <div className="max-w-7xl mx-auto">
-          {/* Recherche */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -203,7 +203,6 @@ const StadesList = () => {
             )}
           </motion.div>
           
-          {/* Liste des stades */}
           <AnimatePresence>
             <motion.div
               initial={{ opacity: 0, y: 20 }}

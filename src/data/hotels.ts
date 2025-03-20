@@ -6,6 +6,7 @@ export interface Hotel {
   etoiles: number;
   image: string;
   prix: string;
+  ville: string;
   distance: string;
   stadeId: string;
 }

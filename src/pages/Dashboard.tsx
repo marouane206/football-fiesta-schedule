@@ -4,7 +4,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { matches } from '@/data/matches';
 import { stades } from '@/data/stades';
 import { equipes } from '@/data/equipes';
-import { hotels } from '@/data/hotels';
+import { hotels as initialHotels } from '@/data/hotels';
 import { Sidebar, SidebarContent, SidebarProvider, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from '@/components/ui/sidebar';
 import { Calendar, Home, BarChart3, MapPin, Shield, Users, Hotel, LogOut, Plus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -28,11 +28,17 @@ type NewHotelData = {
   stadeId: string;
 };
 
+// Create a global variable to store the hotels list that can be accessed from other components
+let globalHotelsList = [...initialHotels];
+
+// Export a function to get the current hotels list
+export const getHotels = () => globalHotelsList;
+
 const Dashboard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeSection, setActiveSection] = useState<AdminSection>('dashboard');
   const [showHotelForm, setShowHotelForm] = useState(false);
-  const [hotelsList, setHotelsList] = useState(hotels);
+  const [hotelsList, setHotelsList] = useState(initialHotels);
   const { toast } = useToast();
   
   // Data for the pie chart
@@ -72,7 +78,11 @@ const Dashboard = () => {
     };
     
     // Add the new hotel to the list
-    setHotelsList([...hotelsList, newHotel]);
+    const updatedHotels = [...hotelsList, newHotel];
+    setHotelsList(updatedHotels);
+    
+    // Update the global hotels list
+    globalHotelsList = updatedHotels;
     
     toast({
       title: "Hôtel ajouté",
