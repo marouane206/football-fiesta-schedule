@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { matches } from '@/data/matches';
@@ -13,8 +13,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import AdminLogin from '@/components/AdminLogin';
 import { HotelFormDialog } from '@/components/HotelFormDialog';
+import axios from 'axios';
 
-// Define types for different admin sections and hotel data
 type AdminSection = 'dashboard' | 'matches' | 'stades' | 'equipes' | 'utilisateurs' | 'hotels';
 
 type NewHotelData = {
@@ -28,20 +28,24 @@ type NewHotelData = {
   stadeId: string;
 };
 
-// Create a global variable to store the hotels list that can be accessed from other components
-let globalHotelsList = [...initialHotels];
-
-// Export a function to get the current hotels list
-export const getHotels = () => globalHotelsList;
+export const getHotels = async () => {
+  try {
+    const response = await axios.get('http://localhost:8000/api/hotels');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching hotels:', error);
+    return [...initialHotels];
+  }
+};
 
 const Dashboard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeSection, setActiveSection] = useState<AdminSection>('dashboard');
   const [showHotelForm, setShowHotelForm] = useState(false);
   const [hotelsList, setHotelsList] = useState(initialHotels);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   
-  // Data for the pie chart
   const data = [
     { name: 'Casablanca', value: matches.filter(match => match.stade === 'Complexe Sportif Mohammed V').length },
     { name: 'Rabat', value: matches.filter(match => match.stade === 'Stade Moulay Abdellah').length },
@@ -70,31 +74,50 @@ const Dashboard = () => {
     }
   };
 
-  const handleAddHotel = (hotelData: NewHotelData) => {
-    // Create a unique ID based on the hotel name
-    const newHotel = {
-      id: hotelData.nom.toLowerCase().replace(/\s+/g, '-'),
-      ...hotelData
+  const handleAddHotel = async (hotelData: NewHotelData) => {
+    try {
+      const updatedHotels = [...hotelsList, hotelData as Hotel];
+      setHotelsList(updatedHotels);
+      
+      toast({
+        title: "Hôtel ajouté",
+        description: `L'hôtel ${hotelData.nom} a été ajouté avec succès.`,
+      });
+      
+      const response = await axios.get('http://localhost:8000/api/hotels');
+      setHotelsList(response.data);
+    } catch (error) {
+      console.error('Error updating hotels list:', error);
+    }
+  };
+  
+  useEffect(() => {
+    const fetchHotels = async () => {
+      setIsLoading(true);
+      try {
+        const response = await axios.get('http://localhost:8000/api/hotels');
+        setHotelsList(response.data);
+      } catch (error) {
+        console.error('Error fetching hotels:', error);
+        toast({
+          title: "Erreur de connexion",
+          description: "Impossible de charger les hôtels depuis le serveur. Utilisation des données locales.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
     };
     
-    // Add the new hotel to the list
-    const updatedHotels = [...hotelsList, newHotel];
-    setHotelsList(updatedHotels);
-    
-    // Update the global hotels list
-    globalHotelsList = updatedHotels;
-    
-    toast({
-      title: "Hôtel ajouté",
-      description: `L'hôtel ${hotelData.nom} a été ajouté avec succès.`,
-    });
-  };
+    if (isAuthenticated) {
+      fetchHotels();
+    }
+  }, [isAuthenticated, toast]);
   
   if (!isAuthenticated) {
     return <AdminLogin onLogin={handleLogin} />;
   }
 
-  // Dashboard main content
   const renderDashboardContent = () => (
     <div className="flex flex-col space-y-6">
       <div>
@@ -220,7 +243,6 @@ const Dashboard = () => {
     </div>
   );
 
-  // Matches section content
   const renderMatchesContent = () => (
     <div className="flex flex-col space-y-6">
       <div>
@@ -254,7 +276,6 @@ const Dashboard = () => {
     </div>
   );
 
-  // Stades section content
   const renderStadesContent = () => (
     <div className="flex flex-col space-y-6">
       <div>
@@ -287,7 +308,6 @@ const Dashboard = () => {
     </div>
   );
 
-  // Equipes section content
   const renderEquipesContent = () => (
     <div className="flex flex-col space-y-6">
       <div>
@@ -320,7 +340,6 @@ const Dashboard = () => {
     </div>
   );
 
-  // Utilisateurs section content
   const renderUtilisateursContent = () => (
     <div className="flex flex-col space-y-6">
       <div className="flex justify-between items-center">
@@ -353,7 +372,6 @@ const Dashboard = () => {
     </div>
   );
 
-  // Hotels section content
   const renderHotelsContent = () => (
     <div className="flex flex-col space-y-6">
       <div className="flex justify-between items-center">
@@ -398,7 +416,6 @@ const Dashboard = () => {
     </div>
   );
 
-  // Render content based on active section
   const renderContent = () => {
     switch (activeSection) {
       case 'dashboard':

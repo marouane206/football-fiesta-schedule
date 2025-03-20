@@ -1,0 +1,51 @@
+
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: can2025-laravel
+    container_name: can2025-laravel-app
+    restart: unless-stopped
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - can2025
+
+  db:
+    image: mysql:8.0
+    container_name: can2025-laravel-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - can2025-db:/var/lib/mysql
+    networks:
+      - can2025
+
+  nginx:
+    image: nginx:alpine
+    container_name: can2025-laravel-nginx
+    restart: unless-stopped
+    ports:
+      - 8000:80
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d/
+    networks:
+      - can2025
+
+networks:
+  can2025:
+    driver: bridge
+
+volumes:
+  can2025-db:
+    driver: local

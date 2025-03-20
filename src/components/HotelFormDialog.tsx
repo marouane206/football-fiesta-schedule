@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,6 +22,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
+import axios from 'axios';
 
 const formSchema = z.object({
   nom: z.string().min(2, { message: "Le nom doit contenir au moins 2 caractères" }),
@@ -60,14 +60,35 @@ export function HotelFormDialog({ open, onOpenChange, onSubmit }: HotelFormDialo
     },
   });
 
-  const handleSubmit = (data: FormValues) => {
-    onSubmit(data);
-    form.reset();
-    onOpenChange(false);
-    toast({
-      title: "Hôtel ajouté",
-      description: `L'hôtel ${data.nom} a été ajouté avec succès.`,
-    });
+  const handleSubmit = async (data: FormValues) => {
+    try {
+      const response = await axios.post('http://localhost:8000/api/hotels', {
+        nom: data.nom,
+        description: data.description,
+        etoiles: data.etoiles,
+        image: data.image,
+        prix: data.prix,
+        ville: data.ville,
+        distance: data.distance,
+        stade_id: data.stadeId,
+      });
+      
+      onSubmit(response.data);
+      
+      form.reset();
+      onOpenChange(false);
+      toast({
+        title: "Hôtel ajouté",
+        description: `L'hôtel ${data.nom} a été ajouté avec succès.`,
+      });
+    } catch (error) {
+      console.error('Error adding hotel:', error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur s'est produite lors de l'ajout de l'hôtel. Veuillez réessayer.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleReset = () => {
