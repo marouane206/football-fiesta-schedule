@@ -7,6 +7,7 @@ import MatchCard from '@/components/MatchCard';
 import { stades } from '@/data/stades';
 import { matches } from '@/data/matches';
 import { hotels } from '@/data/hotels';
+import { restaurants } from '@/data/restaurants';
 import { useParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Search, ArrowLeft } from 'lucide-react';
@@ -14,12 +15,12 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import StadeHotels from '@/components/StadeHotels';
+import StadeRestaurants from '@/components/StadeRestaurants';
 
 const StadeDetail = () => {
   const { id } = useParams<{ id: string }>();
   const stade = stades.find(s => s.id === id);
-  const stadeMatches = matches.filter(m => m.stade === id);
-  const stadeHotels = hotels.filter(h => h.stadeId === id);
+  const stadeMatches = matches.filter(m => m.stade === stade?.nom);
   
   if (!stade) {
     return (
@@ -103,6 +104,7 @@ const StadeDetail = () => {
               <TabsList className="mb-6">
                 <TabsTrigger value="matches">Matchs</TabsTrigger>
                 <TabsTrigger value="hotels">Hôtels à proximité</TabsTrigger>
+                <TabsTrigger value="restaurants">Restaurants à proximité</TabsTrigger>
               </TabsList>
               
               <TabsContent value="matches">
@@ -122,7 +124,11 @@ const StadeDetail = () => {
               </TabsContent>
               
               <TabsContent value="hotels">
-                <StadeHotels hotels={stadeHotels} stadeId={id || ''} />
+                <StadeHotels hotels={hotels} stadeId={id || ''} />
+              </TabsContent>
+              
+              <TabsContent value="restaurants">
+                <StadeRestaurants restaurants={restaurants} stadeId={id || ''} />
               </TabsContent>
             </Tabs>
           </div>
