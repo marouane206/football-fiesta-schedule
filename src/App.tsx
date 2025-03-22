@@ -19,6 +19,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/stades" element={<Stades />} />
+          <Route path="/stades/:id" element={<Stades />} />
           <Route path="/matches" element={<Matches />} />
           <Route path="/match/:id" element={<MatchDetails />} />
           <Route path="/equipes" element={<Equipes />} />
