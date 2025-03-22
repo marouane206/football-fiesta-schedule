@@ -1,3 +1,4 @@
+
 export interface Equipe {
   id: string;
   nom: string;
@@ -7,6 +8,10 @@ export interface Equipe {
   participationsCAN: number;
   victoires: number;
   description: string;
+  groupe: string;
+  rang: number;
+  entraineur: string;
+  abreviation: string;
   coach: {
     nom: string;
     photo: string;
@@ -32,6 +37,8 @@ export interface Equipe {
   palmares: Array<{
     titre: string;
     annee: string;
+    can?: boolean;
+    meilleurResultat?: string;
   }>;
 }
 
@@ -45,6 +52,10 @@ export const equipes: Equipe[] = [
     participationsCAN: 18,
     victoires: 1,
     description: "L'équipe nationale du Maroc, surnommée les Lions de l'Atlas, est l'une des équipes les plus performantes d'Afrique. Ils ont remporté la Coupe d'Afrique des Nations une fois et ont participé à plusieurs Coupes du Monde.",
+    groupe: "F",
+    rang: 13,
+    entraineur: "Walid Regragui",
+    abreviation: "MAR",
     coach: {
       nom: "Walid Regragui",
       photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Walid_Regragui_2022.jpg/330px-Walid_Regragui_2022.jpg",
@@ -90,7 +101,9 @@ export const equipes: Equipe[] = [
     palmares: [
       {
         titre: "Coupe d'Afrique des Nations",
-        annee: "1976"
+        annee: "1976",
+        can: true,
+        meilleurResultat: "Vainqueur"
       }
     ]
   },
@@ -103,6 +116,10 @@ export const equipes: Equipe[] = [
     participationsCAN: 16,
     victoires: 1,
     description: "L'équipe nationale du Sénégal, surnommée les Lions de la Téranga, est une équipe montante en Afrique. Ils ont remporté leur première Coupe d'Afrique des Nations en 2022.",
+    groupe: "C",
+    rang: 20,
+    entraineur: "Aliou Cissé",
+    abreviation: "SEN",
     coach: {
       nom: "Aliou Cissé",
       photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Aliou_Ciss%C3%A9_2018.jpg/330px-Aliou_Ciss%C3%A9_2018.jpg",
@@ -148,7 +165,9 @@ export const equipes: Equipe[] = [
     palmares: [
       {
         titre: "Coupe d'Afrique des Nations",
-        annee: "2022"
+        annee: "2022",
+        can: true,
+        meilleurResultat: "Vainqueur"
       }
     ]
   },
@@ -161,6 +180,10 @@ export const equipes: Equipe[] = [
     participationsCAN: 20,
     victoires: 2,
     description: "L'équipe nationale d'Algérie, surnommée les Fennecs, est une équipe nord-africaine avec une riche histoire de football. Ils ont remporté la Coupe d'Afrique des Nations à deux reprises.",
+    groupe: "D",
+    rang: 33,
+    entraineur: "Djamel Belmadi",
+    abreviation: "ALG",
     coach: {
       nom: "Djamel Belmadi",
       photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Djamel_Belmadi_2019.jpg/330px-Djamel_Belmadi_2019.jpg",
@@ -206,11 +229,15 @@ export const equipes: Equipe[] = [
     palmares: [
       {
         titre: "Coupe d'Afrique des Nations",
-        annee: "1990"
+        annee: "1990",
+        can: true,
+        meilleurResultat: "Vainqueur"
       },
       {
         titre: "Coupe d'Afrique des Nations",
-        annee: "2019"
+        annee: "2019",
+        can: true,
+        meilleurResultat: "Vainqueur"
       }
     ]
   },
@@ -223,6 +250,10 @@ export const equipes: Equipe[] = [
     participationsCAN: 25,
     victoires: 7,
     description: "L'équipe nationale d'Égypte, surnommée les Pharaons, est l'équipe la plus titrée de la Coupe d'Afrique des Nations. Ils ont une longue et fière histoire de football.",
+    groupe: "B",
+    rang: 36,
+    entraineur: "Hossam Hassan",
+    abreviation: "EGY",
     coach: {
       nom: "Hossam Hassan",
       photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Hossam_Hassan_2018.jpg/330px-Hossam_Hassan_2018.jpg",
@@ -268,31 +299,45 @@ export const equipes: Equipe[] = [
     palmares: [
       {
         titre: "Coupe d'Afrique des Nations",
-        annee: "1957"
+        annee: "1957",
+        can: true,
+        meilleurResultat: "Vainqueur"
       },
       {
         titre: "Coupe d'Afrique des Nations",
-        annee: "1959"
+        annee: "1959",
+        can: true,
+        meilleurResultat: "Vainqueur"
       },
       {
         titre: "Coupe d'Afrique des Nations",
-        annee: "1986"
+        annee: "1986",
+        can: true,
+        meilleurResultat: "Vainqueur"
       },
       {
         titre: "Coupe d'Afrique des Nations",
-        annee: "1998"
+        annee: "1998",
+        can: true,
+        meilleurResultat: "Vainqueur"
       },
       {
         titre: "Coupe d'Afrique des Nations",
-        annee: "2006"
+        annee: "2006",
+        can: true,
+        meilleurResultat: "Vainqueur"
       },
       {
         titre: "Coupe d'Afrique des Nations",
-        annee: "2008"
+        annee: "2008",
+        can: true,
+        meilleurResultat: "Vainqueur"
       },
       {
         titre: "Coupe d'Afrique des Nations",
-        annee: "2010"
+        annee: "2010",
+        can: true,
+        meilleurResultat: "Vainqueur"
       }
     ]
   },
@@ -305,6 +350,10 @@ export const equipes: Equipe[] = [
     participationsCAN: 19,
     victoires: 3,
     description: "L'équipe nationale du Nigeria, surnommée les Super Eagles, est une équipe puissante avec une histoire riche en compétitions africaines et mondiales.",
+    groupe: "A",
+    rang: 42,
+    entraineur: "Finidi George",
+    abreviation: "NGA",
     coach: {
       nom: "Finidi George",
       photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Finidi_George_2019.jpg/330px-Finidi_George_2019.jpg",
@@ -350,15 +399,21 @@ export const equipes: Equipe[] = [
     palmares: [
       {
         titre: "Coupe d'Afrique des Nations",
-        annee: "1980"
+        annee: "1980",
+        can: true,
+        meilleurResultat: "Vainqueur"
       },
       {
         titre: "Coupe d'Afrique des Nations",
-        annee: "1994"
+        annee: "1994",
+        can: true,
+        meilleurResultat: "Vainqueur"
       },
       {
         titre: "Coupe d'Afrique des Nations",
-        annee: "2013"
+        annee: "2013",
+        can: true,
+        meilleurResultat: "Vainqueur"
       }
     ]
   },
@@ -371,6 +426,10 @@ export const equipes: Equipe[] = [
     participationsCAN: 24,
     victoires: 2,
     description: "L'équipe nationale de Côte d'Ivoire, surnommée les Éléphants, est une équipe ouest-africaine connue pour son talent et sa puissance physique.",
+    groupe: "A",
+    rang: 51,
+    entraineur: "Emerse Faé",
+    abreviation: "CIV",
     coach: {
       nom: "Emerse Faé",
       photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Emerse_Fae.jpg/330px-Emerse_Fae.jpg",
@@ -416,11 +475,15 @@ export const equipes: Equipe[] = [
     palmares: [
       {
         titre: "Coupe d'Afrique des Nations",
-        annee: "1992"
+        annee: "1992",
+        can: true,
+        meilleurResultat: "Vainqueur"
       },
-       {
+      {
         titre: "Coupe d'Afrique des Nations",
-        annee: "2015"
+        annee: "2015",
+        can: true,
+        meilleurResultat: "Vainqueur"
       }
     ]
   },
@@ -433,6 +496,10 @@ export const equipes: Equipe[] = [
     participationsCAN: 20,
     victoires: 5,
     description: "L'équipe nationale du Cameroun, surnommée les Lions Indomptables, est l'une des équipes les plus emblématiques d'Afrique, avec plusieurs participations à la Coupe du Monde.",
+    groupe: "C",
+    rang: 50,
+    entraineur: "Marc Brys",
+    abreviation: "CMR",
     coach: {
       nom: "Marc Brys",
       photo: "https://medias.lequipe.fr/img-photo-jpg/marc-brys-a-ete-nomme-selectionneur-du-cameroun-philippe-le-brech-l-equipe/1500000001903914/0:0,1997:1331-828-552-75/c9991.jpg",
@@ -478,23 +545,33 @@ export const equipes: Equipe[] = [
     palmares: [
       {
         titre: "Coupe d'Afrique des Nations",
-        annee: "1984"
+        annee: "1984",
+        can: true,
+        meilleurResultat: "Vainqueur"
       },
       {
         titre: "Coupe d'Afrique des Nations",
-        annee: "1988"
+        annee: "1988",
+        can: true,
+        meilleurResultat: "Vainqueur"
       },
       {
         titre: "Coupe d'Afrique des Nations",
-        annee: "2000"
+        annee: "2000",
+        can: true,
+        meilleurResultat: "Vainqueur"
       },
       {
         titre: "Coupe d'Afrique des Nations",
-        annee: "2002"
+        annee: "2002",
+        can: true,
+        meilleurResultat: "Vainqueur"
       },
       {
         titre: "Coupe d'Afrique des Nations",
-        annee: "2017"
+        annee: "2017",
+        can: true,
+        meilleurResultat: "Vainqueur"
       }
     ]
   },
@@ -507,6 +584,10 @@ export const equipes: Equipe[] = [
     participationsCAN: 20,
     victoires: 1,
     description: "L'équipe nationale de Tunisie, surnommée les Aigles de Carthage, est une équipe nord-africaine respectée avec une longue histoire de participation à la CAN.",
+    groupe: "E",
+    rang: 41,
+    entraineur: "Montasser Louhichi",
+    abreviation: "TUN",
     coach: {
       nom: "Montasser Louhichi",
       photo: "https://www.gnet.tn/wp-content/uploads/2023/12/Montasser-Louhichi-selectionneur-Tunisie-CAN-2023.jpg",
@@ -552,7 +633,9 @@ export const equipes: Equipe[] = [
     palmares: [
       {
         titre: "Coupe d'Afrique des Nations",
-        annee: "2004"
+        annee: "2004",
+        can: true,
+        meilleurResultat: "Vainqueur"
       }
     ]
   },
@@ -565,6 +648,10 @@ export const equipes: Equipe[] = [
     participationsCAN: 12,
     victoires: 0,
     description: "L'équipe nationale du Burkina Faso, surnommée les Étalons, est une équipe d'Afrique de l'Ouest qui a atteint la finale de la CAN en 2013.",
+    groupe: "D",
+    rang: 62,
+    entraineur: "Brama Traoré",
+    abreviation: "BFA",
     coach: {
       nom: "Brama Traoré",
       photo: "https://wiwsport.com/wp-content/uploads/2023/10/Brama-Traore.jpg",
@@ -607,7 +694,14 @@ export const equipes: Equipe[] = [
         numero: 18
       }
     ],
-    palmares: []
+    palmares: [
+      {
+        titre: "Finaliste CAN",
+        annee: "2013",
+        can: true,
+        meilleurResultat: "Finaliste"
+      }
+    ]
   },
   {
     id: "afriquedusud",
@@ -618,6 +712,10 @@ export const equipes: Equipe[] = [
     participationsCAN: 11,
     victoires: 1,
     description: "L'équipe nationale d'Afrique du Sud, surnommée Bafana Bafana, a remporté la Coupe d'Afrique des Nations en 1996, marquant une étape importante dans l'histoire du football du pays.",
+    groupe: "E",
+    rang: 59,
+    entraineur: "Hugo Broos",
+    abreviation: "RSA",
     coach: {
       nom: "Hugo Broos",
       photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Hugo_Broos_Genk.jpg/330px-Hugo_Broos_Genk.jpg",
@@ -663,7 +761,9 @@ export const equipes: Equipe[] = [
     palmares: [
       {
         titre: "Coupe d'Afrique des Nations",
-        annee: "1996"
+        annee: "1996",
+        can: true,
+        meilleurResultat: "Vainqueur"
       }
     ]
   },
@@ -676,6 +776,10 @@ export const equipes: Equipe[] = [
     participationsCAN: 17,
     victoires: 2,
     description: "L'équipe nationale de la RD Congo, surnommée les Léopards, a remporté la Coupe d'Afrique des Nations à deux reprises et est connue pour son style de jeu passionné.",
+    groupe: "F",
+    rang: 63,
+    entraineur: "Sébastien Desabre",
+    abreviation: "RDC",
     coach: {
       nom: "Sébastien Desabre",
       photo: "https://static.onzemondial.com/photos/348017/zoom-sebastien-desabre-n-est-plus-le-selectionneur-de-la-rd-congo.jpg",
@@ -721,11 +825,15 @@ export const equipes: Equipe[] = [
     palmares: [
       {
         titre: "Coupe d'Afrique des Nations",
-        annee: "1968"
+        annee: "1968",
+        can: true,
+        meilleurResultat: "Vainqueur"
       },
       {
         titre: "Coupe d'Afrique des Nations",
-        annee: "1974"
+        annee: "1974",
+        can: true,
+        meilleurResultat: "Vainqueur"
       }
     ]
   },
@@ -738,6 +846,10 @@ export const equipes: Equipe[] = [
     participationsCAN: 13,
     victoires: 0,
     description: "L'équipe nationale du Mali, surnommée les Aigles, est une équipe d'Afrique de l'Ouest qui a souvent été compétitive en Coupe d'Afrique des Nations.",
+    groupe: "E",
+    rang: 47,
+    entraineur: "Éric Chelle",
+    abreviation: "MLI",
     coach: {
       nom: "Éric Chelle",
       photo: "https://malifootball.com/wp-content/uploads/2022/05/Eric-Shelle.jpg",
@@ -780,7 +892,14 @@ export const equipes: Equipe[] = [
         numero: 19
       }
     ],
-    palmares: []
+    palmares: [
+      {
+        titre: "Demi-finaliste CAN",
+        annee: "2013",
+        can: true,
+        meilleurResultat: "Demi-finaliste"
+      }
+    ]
   },
   {
     id: "guinee",
@@ -791,6 +910,10 @@ export const equipes: Equipe[] = [
     participationsCAN: 13,
     victoires: 0,
     description: "L'équipe nationale de Guinée, surnommée le Syli National, est une équipe d'Afrique de l'Ouest qui a participé à plusieurs reprises à la Coupe d'Afrique des Nations.",
+    groupe: "C",
+    rang: 76,
+    entraineur: "Kaba Diawara",
+    abreviation: "GUI",
     coach: {
       nom: "Kaba Diawara",
       photo: "https://static.onzemondial.com/photos/318714/zoom-kaba-diawara.jpg",
@@ -833,6 +956,13 @@ export const equipes: Equipe[] = [
         numero: 22
       }
     ],
-    palmares: []
+    palmares: [
+      {
+        titre: "Finaliste CAN",
+        annee: "1976",
+        can: true,
+        meilleurResultat: "Finaliste"
+      }
+    ]
   }
 ];
