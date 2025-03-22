@@ -816,4 +816,23 @@ export const equipes: Equipe[] = [
       },
       {
         id: "serhou-guirassy",
-        nom
+        nom: "Serhou Guirassy",
+        photo: "https://img.a.transfermarkt.technology/image/foto/normal/serhou-guirassy.jpg",
+        poste: "Attaquant",
+        club: "VfB Stuttgart",
+        age: 28,
+        numero: 9
+      },
+      {
+        id: "mohamed-bayo",
+        nom: "Mohamed Bayo",
+        photo: "https://img.a.transfermarkt.technology/image/foto/normal/mohamed-bayo.jpg",
+        poste: "Attaquant",
+        club: "Le Havre",
+        age: 26,
+        numero: 22
+      }
+    ],
+    palmares: []
+  }
+];
