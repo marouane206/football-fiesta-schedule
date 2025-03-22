@@ -1,10 +1,9 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Hotel } from '@/data/hotels';
 import HotelCard from './HotelCard';
 import { Bed } from 'lucide-react';
-import axios from 'axios';
 
 interface StadeHotelsProps {
   hotels: Hotel[];
@@ -12,50 +11,7 @@ interface StadeHotelsProps {
 }
 
 const StadeHotels: React.FC<StadeHotelsProps> = ({ hotels, stadeId }) => {
-  const [stadeHotels, setStadeHotels] = useState<Hotel[]>(hotels);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  
-  useEffect(() => {
-    const fetchHotels = async () => {
-      setIsLoading(true);
-      setError(null);
-      
-      try {
-        // Use the Laravel API endpoint to get hotels by stade
-        const response = await axios.get(`http://localhost:8000/api/stades/${stadeId}/hotels`);
-        // Make sure the received data has all required properties
-        const apiHotels: Hotel[] = response.data;
-        setStadeHotels(apiHotels);
-      } catch (err) {
-        console.error('Error fetching hotels:', err);
-        setError('Unable to load hotels data. Using local data instead.');
-        // Fallback to local data
-        setStadeHotels(hotels);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    // Only fetch if we have a stadeId
-    if (stadeId) {
-      fetchHotels();
-    } else {
-      setStadeHotels(hotels);
-    }
-  }, [stadeId, hotels]);
-  
-  if (isLoading) {
-    return (
-      <div className="text-center py-12 bg-gray-50 dark:bg-gray-800 rounded-xl">
-        <p className="text-gray-500">Chargement des hôtels...</p>
-      </div>
-    );
-  }
-  
-  if (error) {
-    console.warn(error);
-  }
+  const stadeHotels = hotels.filter(hotel => hotel.stadeId === stadeId);
   
   if (stadeHotels.length === 0) {
     return (

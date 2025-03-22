@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from '@/components/Navbar';
@@ -15,31 +14,12 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import StadeHotels from '@/components/StadeHotels';
-import axios from 'axios';
 
 const StadeDetail = () => {
   const { id } = useParams<{ id: string }>();
   const stade = stades.find(s => s.id === id);
   const stadeMatches = matches.filter(m => m.stade === id);
-  
-  const [stadeHotels, setStadeHotels] = useState(hotels.filter(h => h.stadeId === id));
-  
-  useEffect(() => {
-    const fetchHotels = async () => {
-      if (id) {
-        try {
-          const response = await axios.get(`http://localhost:8000/api/stades/${id}/hotels`);
-          setStadeHotels(response.data);
-        } catch (error) {
-          console.error('Error fetching hotels:', error);
-          // Fallback to local data if API fails
-          setStadeHotels(hotels.filter(h => h.stadeId === id));
-        }
-      }
-    };
-    
-    fetchHotels();
-  }, [id]);
+  const stadeHotels = hotels.filter(h => h.stadeId === id);
   
   if (!stade) {
     return (

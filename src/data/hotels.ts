@@ -8,11 +8,10 @@ export interface Hotel {
   prix: string;
   ville: string; 
   distance: string;
-  stade_id?: string; // Backend uses stade_id
-  stadeId?: string;  // Frontend uses stadeId
+  stadeId?: string;
 }
 
-// Sample hotel data - ensure all have the ville property
+// Sample hotel data
 export const hotels: Hotel[] = [
   {
     id: "movenpick-casablanca",

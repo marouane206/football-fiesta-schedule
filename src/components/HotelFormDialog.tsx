@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,7 +23,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import axios from 'axios';
 
 const formSchema = z.object({
   nom: z.string().min(2, { message: "Le nom doit contenir au moins 2 caractères" }),
@@ -62,18 +62,8 @@ export function HotelFormDialog({ open, onOpenChange, onSubmit }: HotelFormDialo
 
   const handleSubmit = async (data: FormValues) => {
     try {
-      const response = await axios.post('http://localhost:8000/api/hotels', {
-        nom: data.nom,
-        description: data.description,
-        etoiles: data.etoiles,
-        image: data.image,
-        prix: data.prix,
-        ville: data.ville,
-        distance: data.distance,
-        stade_id: data.stadeId,
-      });
-      
-      onSubmit(response.data);
+      // Simule l'ajout d'un nouvel hôtel localement
+      onSubmit(data);
       
       form.reset();
       onOpenChange(false);

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { matches } from '@/data/matches';
 import { stades } from '@/data/stades';
 import { equipes } from '@/data/equipes';
-import { hotels as initialHotels } from '@/data/hotels';
+import { hotels } from '@/data/hotels';
 import { Sidebar, SidebarContent, SidebarProvider, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from '@/components/ui/sidebar';
 import { Calendar, Home, BarChart3, MapPin, Shield, Users, Hotel, LogOut, Plus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -13,7 +13,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import AdminLogin from '@/components/AdminLogin';
 import { HotelFormDialog } from '@/components/HotelFormDialog';
-import axios from 'axios';
 
 type AdminSection = 'dashboard' | 'matches' | 'stades' | 'equipes' | 'utilisateurs' | 'hotels';
 
@@ -28,22 +27,11 @@ type NewHotelData = {
   stadeId: string;
 };
 
-export const getHotels = async () => {
-  try {
-    const response = await axios.get('http://localhost:8000/api/hotels');
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching hotels:', error);
-    return [...initialHotels];
-  }
-};
-
 const Dashboard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeSection, setActiveSection] = useState<AdminSection>('dashboard');
   const [showHotelForm, setShowHotelForm] = useState(false);
-  const [hotelsList, setHotelsList] = useState(initialHotels);
-  const [isLoading, setIsLoading] = useState(false);
+  const [hotelsList, setHotelsList] = useState(hotels);
   const { toast } = useToast();
   
   const data = [
@@ -74,49 +62,29 @@ const Dashboard = () => {
     }
   };
 
-  const handleAddHotel = async (hotelData: NewHotelData) => {
+  const handleAddHotel = (hotelData: NewHotelData) => {
     try {
-      const updatedHotels = [...hotelsList, hotelData as Hotel];
+      const newHotel = {
+        id: hotelData.nom.toLowerCase().replace(/\s+/g, '-'),
+        ...hotelData
+      };
+      
+      const updatedHotels = [...hotelsList, newHotel];
       setHotelsList(updatedHotels);
       
       toast({
         title: "Hôtel ajouté",
         description: `L'hôtel ${hotelData.nom} a été ajouté avec succès.`,
       });
-      
-      const response = await axios.get('http://localhost:8000/api/hotels');
-      setHotelsList(response.data);
     } catch (error) {
       console.error('Error updating hotels list:', error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur s'est produite lors de l'ajout de l'hôtel.",
+        variant: "destructive",
+      });
     }
   };
-  
-  useEffect(() => {
-    const fetchHotels = async () => {
-      setIsLoading(true);
-      try {
-        const response = await axios.get('http://localhost:8000/api/hotels');
-        setHotelsList(response.data);
-      } catch (error) {
-        console.error('Error fetching hotels:', error);
-        toast({
-          title: "Erreur de connexion",
-          description: "Impossible de charger les hôtels depuis le serveur. Utilisation des données locales.",
-          variant: "destructive",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    if (isAuthenticated) {
-      fetchHotels();
-    }
-  }, [isAuthenticated, toast]);
-  
-  if (!isAuthenticated) {
-    return <AdminLogin onLogin={handleLogin} />;
-  }
 
   const renderDashboardContent = () => (
     <div className="flex flex-col space-y-6">
