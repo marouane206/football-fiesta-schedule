@@ -27,10 +27,49 @@ type NewHotelData = {
   stadeId: string;
 };
 
+// Définition des données de formulaire pour le type Match
+type NewMatchData = {
+  equipe1: string;
+  equipe2: string;
+  date: string;
+  heure: string;
+  stade: string;
+  phase: string;
+};
+
+// Définition des données de formulaire pour le type Stade
+type NewStadeData = {
+  nom: string;
+  ville: string;
+  capacite: number;
+  image: string;
+  description: string;
+  anneeConstruction: number;
+};
+
+// Définition des données de formulaire pour le type Equipe
+type NewEquipeData = {
+  nom: string;
+  drapeau: string;
+  groupe: string;
+  confederation: string;
+};
+
+// Définition des données de formulaire pour le type Utilisateur
+type NewUserData = {
+  username: string;
+  password: string;
+  role: string;
+};
+
 const Dashboard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeSection, setActiveSection] = useState<AdminSection>('dashboard');
   const [showHotelForm, setShowHotelForm] = useState(false);
+  const [showMatchForm, setShowMatchForm] = useState(false);
+  const [showStadeForm, setShowStadeForm] = useState(false);
+  const [showEquipeForm, setShowEquipeForm] = useState(false);
+  const [showUserForm, setShowUserForm] = useState(false);
   const [hotelsList, setHotelsList] = useState(hotels);
   const { toast } = useToast();
   
@@ -84,6 +123,39 @@ const Dashboard = () => {
         variant: "destructive",
       });
     }
+  };
+
+  // Fonctions pour gérer l'ajout des différentes entités (à implémenter plus tard)
+  const handleAddMatch = () => {
+    setShowMatchForm(false);
+    toast({
+      title: "Fonctionnalité à venir",
+      description: "L'ajout de match sera disponible prochainement.",
+    });
+  };
+
+  const handleAddStade = () => {
+    setShowStadeForm(false);
+    toast({
+      title: "Fonctionnalité à venir",
+      description: "L'ajout de stade sera disponible prochainement.",
+    });
+  };
+
+  const handleAddEquipe = () => {
+    setShowEquipeForm(false);
+    toast({
+      title: "Fonctionnalité à venir",
+      description: "L'ajout d'équipe sera disponible prochainement.",
+    });
+  };
+
+  const handleAddUser = () => {
+    setShowUserForm(false);
+    toast({
+      title: "Fonctionnalité à venir",
+      description: "L'ajout d'utilisateur sera disponible prochainement.",
+    });
   };
 
   const renderDashboardContent = () => (
@@ -213,9 +285,14 @@ const Dashboard = () => {
 
   const renderMatchesContent = () => (
     <div className="flex flex-col space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Matches</h1>
-        <p className="text-muted-foreground">Gestion des matches de la CAN 2025</p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Matches</h1>
+          <p className="text-muted-foreground">Gestion des matches de la CAN 2025</p>
+        </div>
+        <Button onClick={() => setShowMatchForm(true)}>
+          <Plus className="mr-2 h-4 w-4" /> Ajouter un match
+        </Button>
       </div>
       
       <Card>
@@ -246,9 +323,14 @@ const Dashboard = () => {
 
   const renderStadesContent = () => (
     <div className="flex flex-col space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Stades</h1>
-        <p className="text-muted-foreground">Gestion des stades de la CAN 2025</p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Stades</h1>
+          <p className="text-muted-foreground">Gestion des stades de la CAN 2025</p>
+        </div>
+        <Button onClick={() => setShowStadeForm(true)}>
+          <Plus className="mr-2 h-4 w-4" /> Ajouter un stade
+        </Button>
       </div>
       
       <Card>
@@ -278,9 +360,14 @@ const Dashboard = () => {
 
   const renderEquipesContent = () => (
     <div className="flex flex-col space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Équipes</h1>
-        <p className="text-muted-foreground">Gestion des équipes de la CAN 2025</p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Équipes</h1>
+          <p className="text-muted-foreground">Gestion des équipes de la CAN 2025</p>
+        </div>
+        <Button onClick={() => setShowEquipeForm(true)}>
+          <Plus className="mr-2 h-4 w-4" /> Ajouter une équipe
+        </Button>
       </div>
       
       <Card>
@@ -315,12 +402,15 @@ const Dashboard = () => {
           <h1 className="text-3xl font-bold tracking-tight">Utilisateurs</h1>
           <p className="text-muted-foreground">Gestion des utilisateurs administrateurs</p>
         </div>
+        <Button onClick={() => setShowUserForm(true)}>
+          <Plus className="mr-2 h-4 w-4" /> Ajouter un utilisateur
+        </Button>
       </div>
       
       <Card>
         <CardHeader>
           <CardTitle>Liste des Utilisateurs</CardTitle>
-          <CardDescription>Total: 1 administrateur</CardDescription>
+          <CardDescription>Total: 2 administrateurs</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -332,6 +422,16 @@ const Dashboard = () => {
               </div>
               <div>
                 <Badge variant="success">Administrateur</Badge>
+              </div>
+            </div>
+            <div className="flex items-center justify-between border-b pb-2">
+              <div className="flex items-center space-x-3">
+                <div className="font-medium">
+                  demo
+                </div>
+              </div>
+              <div>
+                <Badge variant="secondary">Démo</Badge>
               </div>
             </div>
           </div>
@@ -404,103 +504,118 @@ const Dashboard = () => {
   };
   
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full">
-        <Sidebar>
-          <SidebarHeader>
-            <div className="px-2 py-2">
-              <h2 className="text-xl font-bold tracking-tight">CAN 2025</h2>
-              <p className="text-sm text-muted-foreground">Dashboard Admin</p>
-            </div>
-          </SidebarHeader>
-          <SidebarContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  tooltip="Tableau de bord" 
-                  isActive={activeSection === 'dashboard'}
-                  onClick={() => setActiveSection('dashboard')}
-                >
-                  <Home className="h-4 w-4" />
-                  <span>Tableau de bord</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  tooltip="Matches" 
-                  isActive={activeSection === 'matches'}
-                  onClick={() => setActiveSection('matches')}
-                >
-                  <Calendar className="h-4 w-4" />
-                  <span>Matches</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  tooltip="Stades" 
-                  isActive={activeSection === 'stades'}
-                  onClick={() => setActiveSection('stades')}
-                >
-                  <MapPin className="h-4 w-4" />
-                  <span>Stades</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  tooltip="Équipes" 
-                  isActive={activeSection === 'equipes'}
-                  onClick={() => setActiveSection('equipes')}
-                >
-                  <Shield className="h-4 w-4" />
-                  <span>Équipes</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  tooltip="Utilisateurs" 
-                  isActive={activeSection === 'utilisateurs'}
-                  onClick={() => setActiveSection('utilisateurs')}
-                >
-                  <Users className="h-4 w-4" />
-                  <span>Utilisateurs</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton 
-                  tooltip="Hotels" 
-                  isActive={activeSection === 'hotels'}
-                  onClick={() => setActiveSection('hotels')}
-                >
-                  <Hotel className="h-4 w-4" />
-                  <span>Hotels</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarContent>
-          <SidebarFooter>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton onClick={handleLogout} tooltip="Déconnexion">
-                  <LogOut className="h-4 w-4" />
-                  <span>Déconnexion</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarFooter>
-        </Sidebar>
-        
-        <motion.div 
-          className="flex-1 p-6 md:p-8 bg-gray-50 dark:bg-gray-900"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          key={activeSection}
-        >
-          {renderContent()}
-        </motion.div>
-      </div>
-    </SidebarProvider>
+    <>
+      {!isAuthenticated ? (
+        <AdminLogin onLogin={handleLogin} />
+      ) : (
+        <SidebarProvider>
+          <div className="min-h-screen flex w-full">
+            <Sidebar>
+              <SidebarHeader>
+                <div className="px-2 py-2">
+                  <h2 className="text-xl font-bold tracking-tight">CAN 2025</h2>
+                  <p className="text-sm text-muted-foreground">Dashboard Admin</p>
+                </div>
+              </SidebarHeader>
+              <SidebarContent>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton 
+                      tooltip="Tableau de bord" 
+                      isActive={activeSection === 'dashboard'}
+                      onClick={() => setActiveSection('dashboard')}
+                    >
+                      <Home className="h-4 w-4" />
+                      <span>Tableau de bord</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton 
+                      tooltip="Matches" 
+                      isActive={activeSection === 'matches'}
+                      onClick={() => setActiveSection('matches')}
+                    >
+                      <Calendar className="h-4 w-4" />
+                      <span>Matches</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton 
+                      tooltip="Stades" 
+                      isActive={activeSection === 'stades'}
+                      onClick={() => setActiveSection('stades')}
+                    >
+                      <MapPin className="h-4 w-4" />
+                      <span>Stades</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton 
+                      tooltip="Équipes" 
+                      isActive={activeSection === 'equipes'}
+                      onClick={() => setActiveSection('equipes')}
+                    >
+                      <Shield className="h-4 w-4" />
+                      <span>Équipes</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton 
+                      tooltip="Utilisateurs" 
+                      isActive={activeSection === 'utilisateurs'}
+                      onClick={() => setActiveSection('utilisateurs')}
+                    >
+                      <Users className="h-4 w-4" />
+                      <span>Utilisateurs</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton 
+                      tooltip="Hotels" 
+                      isActive={activeSection === 'hotels'}
+                      onClick={() => setActiveSection('hotels')}
+                    >
+                      <Hotel className="h-4 w-4" />
+                      <span>Hotels</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarContent>
+              <SidebarFooter>
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton onClick={handleLogout} tooltip="Déconnexion">
+                      <LogOut className="h-4 w-4" />
+                      <span>Déconnexion</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarFooter>
+            </Sidebar>
+            
+            <motion.div 
+              className="flex-1 p-6 md:p-8 bg-gray-50 dark:bg-gray-900"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              key={activeSection}
+            >
+              {renderContent()}
+            </motion.div>
+          </div>
+        </SidebarProvider>
+      )}
+
+      {/* Dialog forms pour ajouter de nouveaux éléments */}
+      <HotelFormDialog 
+        open={showHotelForm} 
+        onOpenChange={setShowHotelForm} 
+        onSubmit={handleAddHotel} 
+      />
+      
+      {/* Ici, des formulaires similaires seraient ajoutés pour les autres entités */}
+    </>
   );
 };
 

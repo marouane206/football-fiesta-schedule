@@ -24,8 +24,9 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
     setError('');
     
     // Simple admin authentication
-    // In a real application, this would be handled by a backend authentication system
-    if (username === 'admin' && password === 'admin123') {
+    // Dans un vrai projet, cela serait géré par un système d'authentification backend
+    if ((username === 'admin' && password === 'admin123') || 
+        (username === 'demo' && password === 'demo2025')) {
       onLogin(true);
       setOpen(false);
       toast({
@@ -71,7 +72,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
                   id="username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  placeholder="admin"
+                  placeholder="admin ou demo"
                   required
                 />
               </div>
@@ -86,7 +87,7 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLogin }) => {
                   required
                 />
                 <p className="text-xs text-muted-foreground">
-                  Note: Pour la démo, utilisez 'admin' et 'admin123'
+                  Pour la démo, utilisez 'admin/admin123' ou 'demo/demo2025'
                 </p>
               </div>
             </div>
