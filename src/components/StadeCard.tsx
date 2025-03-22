@@ -48,7 +48,7 @@ const StadeCard: React.FC<StadeCardProps> = ({ stade }) => {
         </p>
         
         <Button asChild variant="outline" className="w-full rounded-lg">
-          <Link to={`/stades`} state={{ id: stade.id }}>
+          <Link to={`/stades/${stade.id}`}>
             Voir les matchs
           </Link>
         </Button>

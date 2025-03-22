@@ -1,37 +1,41 @@
 
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { ThemeProvider } from 'next-themes';
-import { Toaster } from '@/components/ui/toaster';
-import './App.css';
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
+import Index from "./pages/Index";
+import Matches from "./pages/Matches";
+import Stades from "./pages/Stades";
+import Equipes from "./pages/Equipes";
+import Dashboard from "./pages/Dashboard";
+import NotFound from "./pages/NotFound";
+import CompetitionBanner from "./components/CompetitionBanner";
 
-import Index from '@/pages/Index';
-import Stades from '@/pages/Stades';
-import Matches from '@/pages/Matches';
-import MatchDetails from '@/pages/MatchDetails';
-import Equipes from '@/pages/Equipes';
-import NotFound from '@/pages/NotFound';
-import Dashboard from '@/pages/Dashboard';
+const queryClient = new QueryClient();
 
-function App() {
-  return (
-    <div className="App">
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/stades" element={<Stades />} />
-          <Route path="/stades/:id" element={<Stades />} />
-          <Route path="/matches" element={<Matches />} />
-          <Route path="/match/:id" element={<MatchDetails />} />
-          <Route path="/equipes" element={<Equipes />} />
-          <Route path="/admin" element={<Dashboard />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        <ThemeProvider attribute="class" defaultTheme="light">
-          <Toaster />
-        </ThemeProvider>
+        <CompetitionBanner />
+        <AnimatePresence mode="wait">
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/matches" element={<Matches />} />
+            <Route path="/stades" element={<Stades />} />
+            <Route path="/stades/:id" element={<Stades />} />
+            <Route path="/equipes" element={<Equipes />} />
+            <Route path="/admin" element={<Dashboard />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AnimatePresence>
       </BrowserRouter>
-    </div>
-  );
-}
+    </TooltipProvider>
+  </QueryClientProvider>
+);
 
 export default App;

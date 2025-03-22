@@ -7,7 +7,6 @@ import { Match } from '@/data/matches';
 import { equipes } from '@/data/equipes';
 import { stades } from '@/data/stades';
 import { cn } from '@/lib/utils';
-import { useNavigate } from 'react-router-dom';
 
 interface MatchCardProps {
   match: Match;
@@ -15,7 +14,6 @@ interface MatchCardProps {
 }
 
 const MatchCard: React.FC<MatchCardProps> = ({ match, compact = false }) => {
-  const navigate = useNavigate();
   const equipe1 = equipes.find(e => e.id === match.equipe1);
   const equipe2 = equipes.find(e => e.id === match.equipe2);
   const stade = stades.find(s => s.id === match.stade);
@@ -23,17 +21,10 @@ const MatchCard: React.FC<MatchCardProps> = ({ match, compact = false }) => {
   const matchDate = parseISO(match.date);
   const formattedDate = format(matchDate, 'dd MMMM yyyy', { locale: fr });
   const jour = format(matchDate, 'EEEE', { locale: fr });
-  
-  const handleClick = () => {
-    navigate(`/match/${match.id}`);
-  };
 
   if (compact) {
     return (
-      <div 
-        className="bg-white dark:bg-gray-800 rounded-xl shadow-subtle hover:shadow-hover transition-all duration-300 overflow-hidden cursor-pointer"
-        onClick={handleClick}
-      >
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-subtle hover:shadow-hover transition-all duration-300 overflow-hidden">
         <div className="p-4">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center space-x-2">
@@ -81,10 +72,7 @@ const MatchCard: React.FC<MatchCardProps> = ({ match, compact = false }) => {
   }
 
   return (
-    <div 
-      className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-subtle hover:shadow-hover transition-all duration-300 border border-gray-100 dark:border-gray-700 cursor-pointer"
-      onClick={handleClick}
-    >
+    <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-subtle hover:shadow-hover transition-all duration-300 border border-gray-100 dark:border-gray-700">
       <div className={cn(
         "p-2 text-center text-white text-xs font-medium",
         match.phase === "Groupe" ? "bg-caf-green" :

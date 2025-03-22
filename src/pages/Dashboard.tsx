@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
@@ -6,18 +5,16 @@ import { matches } from '@/data/matches';
 import { stades } from '@/data/stades';
 import { equipes } from '@/data/equipes';
 import { hotels } from '@/data/hotels';
-import { restaurants } from '@/data/restaurants';
 import { Sidebar, SidebarContent, SidebarProvider, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from '@/components/ui/sidebar';
-import { Calendar, Home, BarChart3, MapPin, Shield, Users, Hotel, LogOut, Plus, Utensils } from 'lucide-react';
+import { Calendar, Home, BarChart3, MapPin, Shield, Users, Hotel, LogOut, Plus } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import AdminLogin from '@/components/AdminLogin';
 import { HotelFormDialog } from '@/components/HotelFormDialog';
-import { RestaurantFormDialog } from '@/components/RestaurantFormDialog';
 
-type AdminSection = 'dashboard' | 'matches' | 'stades' | 'equipes' | 'utilisateurs' | 'hotels' | 'restaurants';
+type AdminSection = 'dashboard' | 'matches' | 'stades' | 'equipes' | 'utilisateurs' | 'hotels';
 
 type NewHotelData = {
   nom: string;
@@ -28,18 +25,6 @@ type NewHotelData = {
   ville: string;
   distance: string;
   stadeId: string;
-};
-
-type NewRestaurantData = {
-  nom: string;
-  description: string;
-  cuisine: string;
-  image: string;
-  prix: string;
-  ville: string;
-  distance: string;
-  stadeId: string;
-  noteClient?: number;
 };
 
 // Définition des données de formulaire pour le type Match
@@ -81,13 +66,11 @@ const Dashboard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeSection, setActiveSection] = useState<AdminSection>('dashboard');
   const [showHotelForm, setShowHotelForm] = useState(false);
-  const [showRestaurantForm, setShowRestaurantForm] = useState(false);
   const [showMatchForm, setShowMatchForm] = useState(false);
   const [showStadeForm, setShowStadeForm] = useState(false);
   const [showEquipeForm, setShowEquipeForm] = useState(false);
   const [showUserForm, setShowUserForm] = useState(false);
   const [hotelsList, setHotelsList] = useState(hotels);
-  const [restaurantsList, setRestaurantsList] = useState(restaurants);
   const { toast } = useToast();
   
   const data = [
@@ -137,30 +120,6 @@ const Dashboard = () => {
       toast({
         title: "Erreur",
         description: "Une erreur s'est produite lors de l'ajout de l'hôtel.",
-        variant: "destructive",
-      });
-    }
-  };
-  
-  const handleAddRestaurant = (restaurantData: NewRestaurantData) => {
-    try {
-      const newRestaurant = {
-        id: restaurantData.nom.toLowerCase().replace(/\s+/g, '-'),
-        ...restaurantData
-      };
-      
-      const updatedRestaurants = [...restaurantsList, newRestaurant];
-      setRestaurantsList(updatedRestaurants);
-      
-      toast({
-        title: "Restaurant ajouté",
-        description: `Le restaurant ${restaurantData.nom} a été ajouté avec succès.`,
-      });
-    } catch (error) {
-      console.error('Error updating restaurants list:', error);
-      toast({
-        title: "Erreur",
-        description: "Une erreur s'est produite lors de l'ajout du restaurant.",
         variant: "destructive",
       });
     }
@@ -251,14 +210,14 @@ const Dashboard = () => {
         
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Partenaires</CardTitle>
+            <CardTitle className="text-sm font-medium">Utilisateurs</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{hotelsList.length + restaurantsList.length}</div>
+            <div className="text-2xl font-bold">1</div>
           </CardContent>
           <CardFooter>
             <p className="text-xs text-muted-foreground">
-              Hôtels et restaurants partenaires
+              Administrateurs actifs
             </p>
           </CardFooter>
         </Card>
@@ -516,44 +475,12 @@ const Dashboard = () => {
           </div>
         </CardContent>
       </Card>
-    </div>
-  );
-  
-  const renderRestaurantsContent = () => (
-    <div className="flex flex-col space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Restaurants</h1>
-          <p className="text-muted-foreground">Gestion des restaurants partenaires</p>
-        </div>
-        <Button onClick={() => setShowRestaurantForm(true)}>
-          <Plus className="mr-2 h-4 w-4" /> Ajouter un restaurant
-        </Button>
-      </div>
       
-      <Card>
-        <CardHeader>
-          <CardTitle>Liste des Restaurants</CardTitle>
-          <CardDescription>Total: {restaurantsList.length} restaurants partenaires</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {restaurantsList.map((restaurant) => (
-              <div key={restaurant.id} className="flex items-center justify-between border-b pb-2">
-                <div className="flex items-center space-x-3">
-                  <div className="font-medium">
-                    {restaurant.nom}
-                  </div>
-                </div>
-                <div className="flex space-x-2">
-                  <Badge>{restaurant.ville}</Badge>
-                  <Badge variant="outline">{restaurant.cuisine}</Badge>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      <HotelFormDialog 
+        open={showHotelForm} 
+        onOpenChange={setShowHotelForm} 
+        onSubmit={handleAddHotel} 
+      />
     </div>
   );
 
@@ -571,8 +498,6 @@ const Dashboard = () => {
         return renderUtilisateursContent();
       case 'hotels':
         return renderHotelsContent();
-      case 'restaurants':
-        return renderRestaurantsContent();
       default:
         return renderDashboardContent();
     }
@@ -651,17 +576,7 @@ const Dashboard = () => {
                       onClick={() => setActiveSection('hotels')}
                     >
                       <Hotel className="h-4 w-4" />
-                      <span>Hôtels</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton 
-                      tooltip="Restaurants" 
-                      isActive={activeSection === 'restaurants'}
-                      onClick={() => setActiveSection('restaurants')}
-                    >
-                      <Utensils className="h-4 w-4" />
-                      <span>Restaurants</span>
+                      <span>Hotels</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>
@@ -697,12 +612,6 @@ const Dashboard = () => {
         open={showHotelForm} 
         onOpenChange={setShowHotelForm} 
         onSubmit={handleAddHotel} 
-      />
-      
-      <RestaurantFormDialog 
-        open={showRestaurantForm} 
-        onOpenChange={setShowRestaurantForm} 
-        onSubmit={handleAddRestaurant} 
       />
       
       {/* Ici, des formulaires similaires seraient ajoutés pour les autres entités */}
