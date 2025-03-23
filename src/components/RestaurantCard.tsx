@@ -61,10 +61,15 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ restaurant }) => {
         </p>
         
         <div className="space-y-2 text-sm">
-          <div className="flex items-center text-gray-600 dark:text-gray-300">
+          <a 
+            href={`https://maps.google.com/?q=${encodeURIComponent(restaurant.adresse)}`}
+            target="_blank"
+            rel="noopener noreferrer" 
+            className="flex items-center text-gray-600 dark:text-gray-300 hover:text-caf-red transition-colors"
+          >
             <MapPin size={14} className="mr-2 text-caf-red shrink-0" />
             <span className="line-clamp-1">{restaurant.adresse}</span>
-          </div>
+          </a>
           <div className="flex items-center text-gray-600 dark:text-gray-300">
             <Clock size={14} className="mr-2 text-caf-green shrink-0" />
             <span className="line-clamp-1">{restaurant.horaires}</span>
@@ -78,7 +83,7 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ restaurant }) => {
             À {restaurant.distance}
           </span>
           <a 
-            href={`tel:${restaurant.telephone}`} 
+            href={`tel:${restaurant.telephone.replace(/\s+/g, '')}`} 
             className="flex items-center text-sm font-medium text-caf-green hover:underline"
           >
             <Phone size={14} className="mr-1" />

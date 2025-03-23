@@ -63,17 +63,25 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel }) => {
       
       <CardFooter className="pt-0 flex flex-col items-start gap-2">
         {hotel.adresse && (
-          <div className="flex items-start gap-2">
+          <a 
+            href={`https://maps.google.com/?q=${encodeURIComponent(hotel.adresse + ', ' + hotel.ville)}`} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-start gap-2 hover:text-caf-green transition-colors"
+          >
             <MapPin size={16} className="text-caf-green mt-0.5 shrink-0" />
             <span className="text-sm">{hotel.adresse}</span>
-          </div>
+          </a>
         )}
         
         {hotel.telephone && (
-          <div className="flex items-center gap-2">
+          <a 
+            href={`tel:${hotel.telephone.replace(/\s+/g, '')}`}
+            className="flex items-center gap-2 hover:text-caf-green transition-colors"
+          >
             <Phone size={16} className="text-caf-green shrink-0" />
             <span className="text-sm font-medium">{hotel.telephone}</span>
-          </div>
+          </a>
         )}
       </CardFooter>
     </Card>
