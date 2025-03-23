@@ -20,7 +20,11 @@ import StadeRestaurants from '@/components/StadeRestaurants';
 const StadeDetail = () => {
   const { id } = useParams<{ id: string }>();
   const stade = stades.find(s => s.id === id);
-  const stadeMatches = matches.filter(m => m.stade === stade?.nom);
+  
+  const stadeMatches = stade ? matches.filter(m => {
+    const stadeNom = stades.find(s => s.id === m.stade)?.nom;
+    return stadeNom === stade.nom;
+  }) : [];
   
   if (!stade) {
     return (
