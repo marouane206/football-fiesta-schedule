@@ -2,12 +2,14 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Trophy, Users, Flag, Globe, User } from 'lucide-react';
+import { ArrowLeft, Trophy, Users, Flag, Globe, User, Calendar, Ruler, Weight, Building } from 'lucide-react';
 import { equipes } from '@/data/equipes';
+import { joueurs } from '@/data/joueurs';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { matches } from '@/data/matches';
 import MatchCard from '@/components/MatchCard';
 
@@ -18,6 +20,16 @@ const EquipeDetail = () => {
   const equipeMatches = matches.filter(match => 
     match.equipe1 === equipe?.id || match.equipe2 === equipe?.id
   );
+  
+  const equipeJoueurs = joueurs.filter(joueur => 
+    joueur.equipId === equipe?.id
+  );
+  
+  // Group players by position
+  const gardiens = equipeJoueurs.filter(j => j.poste === "Gardien");
+  const defenseurs = equipeJoueurs.filter(j => j.poste === "Défenseur");
+  const milieux = equipeJoueurs.filter(j => j.poste === "Milieu");
+  const attaquants = equipeJoueurs.filter(j => j.poste === "Attaquant");
   
   if (!equipe) {
     return (
@@ -161,11 +173,68 @@ const EquipeDetail = () => {
               </div>
             </motion.div>
             
-            <Tabs defaultValue="matches" className="mb-12">
+            <Tabs defaultValue="joueurs" className="mb-12">
               <TabsList className="mb-6">
+                <TabsTrigger value="joueurs">Joueurs</TabsTrigger>
                 <TabsTrigger value="matches">Matchs</TabsTrigger>
                 <TabsTrigger value="statistics">Statistiques</TabsTrigger>
               </TabsList>
+              
+              <TabsContent value="joueurs">
+                <h2 className="text-2xl font-bold mb-6">Effectif de {equipe.nom}</h2>
+                
+                {equipeJoueurs.length > 0 ? (
+                  <div className="space-y-8">
+                    {gardiens.length > 0 && (
+                      <div>
+                        <h3 className="text-xl font-medium mb-4 text-gray-800 dark:text-gray-200">Gardiens</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                          {gardiens.map(joueur => (
+                            <JoueurCard key={joueur.id} joueur={joueur} />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {defenseurs.length > 0 && (
+                      <div>
+                        <h3 className="text-xl font-medium mb-4 text-gray-800 dark:text-gray-200">Défenseurs</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                          {defenseurs.map(joueur => (
+                            <JoueurCard key={joueur.id} joueur={joueur} />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {milieux.length > 0 && (
+                      <div>
+                        <h3 className="text-xl font-medium mb-4 text-gray-800 dark:text-gray-200">Milieux</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                          {milieux.map(joueur => (
+                            <JoueurCard key={joueur.id} joueur={joueur} />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {attaquants.length > 0 && (
+                      <div>
+                        <h3 className="text-xl font-medium mb-4 text-gray-800 dark:text-gray-200">Attaquants</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                          {attaquants.map(joueur => (
+                            <JoueurCard key={joueur.id} joueur={joueur} />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 bg-gray-50 dark:bg-gray-800 rounded-xl">
+                    <p className="text-gray-500">Aucun joueur disponible pour cette équipe pour le moment.</p>
+                  </div>
+                )}
+              </TabsContent>
               
               <TabsContent value="matches">
                 <h2 className="text-2xl font-bold mb-6">Matchs de {equipe.nom}</h2>
@@ -196,6 +265,86 @@ const EquipeDetail = () => {
       
       <Footer />
     </div>
+  );
+};
+
+interface JoueurCardProps {
+  joueur: typeof joueurs[0];
+}
+
+const JoueurCard: React.FC<JoueurCardProps> = ({ joueur }) => {
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('fr-FR', { 
+      day: '2-digit', 
+      month: '2-digit', 
+      year: 'numeric' 
+    }).format(date);
+  };
+  
+  const calculateAge = (dateString: string) => {
+    const today = new Date();
+    const birthDate = new Date(dateString);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+  
+  return (
+    <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
+      <div className="p-5 flex items-start space-x-4">
+        <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-100 border border-gray-200 flex-shrink-0">
+          {joueur.photo ? (
+            <img 
+              src={joueur.photo} 
+              alt={`${joueur.prenom} ${joueur.nom}`}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gray-200">
+              <User size={36} className="text-gray-400" />
+            </div>
+          )}
+        </div>
+        
+        <div className="flex-1">
+          <div className="flex items-center">
+            <span className="w-8 h-8 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-sm font-medium mr-2">
+              {joueur.numero}
+            </span>
+            <h3 className="text-lg font-bold">
+              {joueur.prenom} {joueur.nom}
+            </h3>
+          </div>
+          
+          <span className="inline-block px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-medium mt-2">
+            {joueur.poste}
+          </span>
+          
+          <div className="mt-3 space-y-2 text-sm">
+            <div className="flex items-center">
+              <Calendar className="mr-2 h-4 w-4 text-gray-500" />
+              <span>{formatDate(joueur.dateNaissance)} ({calculateAge(joueur.dateNaissance)} ans)</span>
+            </div>
+            <div className="flex items-center">
+              <Ruler className="mr-2 h-4 w-4 text-gray-500" />
+              <span>{joueur.taille} cm</span>
+            </div>
+            <div className="flex items-center">
+              <Weight className="mr-2 h-4 w-4 text-gray-500" />
+              <span>{joueur.poids} kg</span>
+            </div>
+            <div className="flex items-center">
+              <Building className="mr-2 h-4 w-4 text-gray-500" />
+              <span>{joueur.club}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Card>
   );
 };
 
