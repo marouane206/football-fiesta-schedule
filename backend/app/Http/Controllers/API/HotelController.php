@@ -36,6 +36,8 @@ class HotelController extends Controller
             'ville' => 'required|string',
             'distance' => 'required|string',
             'stade_id' => 'required|exists:stades,id',
+            'adresse' => 'nullable|string',
+            'telephone' => 'nullable|string',
         ]);
 
         $id = Str::slug($request->nom);
@@ -50,6 +52,8 @@ class HotelController extends Controller
             'ville' => $request->ville,
             'distance' => $request->distance,
             'stade_id' => $request->stade_id,
+            'adresse' => $request->adresse,
+            'telephone' => $request->telephone,
         ]);
 
         return response()->json($hotel, 201);
@@ -68,6 +72,8 @@ class HotelController extends Controller
             'ville' => 'string',
             'distance' => 'string',
             'stade_id' => 'exists:stades,id',
+            'adresse' => 'nullable|string',
+            'telephone' => 'nullable|string',
         ]);
         
         $hotel->update($request->all());

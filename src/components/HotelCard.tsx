@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Star } from 'lucide-react';
+import { Star, MapPin, Phone } from 'lucide-react';
 import { Hotel } from '@/data/hotels';
 import {
   Card,
@@ -61,14 +61,20 @@ const HotelCard: React.FC<HotelCardProps> = ({ hotel }) => {
         </p>
       </CardContent>
       
-      <CardFooter className="pt-0">
-        <a 
-          href="#" 
-          className="text-sm font-medium text-caf-green hover:underline"
-          onClick={(e) => e.preventDefault()}
-        >
-          Voir les disponibilités
-        </a>
+      <CardFooter className="pt-0 flex flex-col items-start gap-2">
+        {hotel.adresse && (
+          <div className="flex items-start gap-2">
+            <MapPin size={16} className="text-caf-green mt-0.5 shrink-0" />
+            <span className="text-sm">{hotel.adresse}</span>
+          </div>
+        )}
+        
+        {hotel.telephone && (
+          <div className="flex items-center gap-2">
+            <Phone size={16} className="text-caf-green shrink-0" />
+            <span className="text-sm font-medium">{hotel.telephone}</span>
+          </div>
+        )}
       </CardFooter>
     </Card>
   );

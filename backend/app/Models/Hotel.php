@@ -19,7 +19,9 @@ class Hotel extends Model
         'prix',
         'ville',
         'distance',
-        'stade_id'
+        'stade_id',
+        'adresse',
+        'telephone'
     ];
 
     public function stade()

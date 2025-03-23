@@ -9,6 +9,8 @@ export interface Hotel {
   ville: string; 
   distance: string;
   stadeId?: string;
+  adresse?: string;
+  telephone?: string;
 }
 
 // Sample hotel data
@@ -22,7 +24,9 @@ export const hotels: Hotel[] = [
     prix: "1500 DH",
     ville: "Casablanca",
     distance: "2.5 km",
-    stadeId: "complexe-mohamed-v"
+    stadeId: "complexe-mohamed-v",
+    adresse: "Avenue Hassan II, Casablanca 20070",
+    telephone: "+212 522-42-1000"
   },
   {
     id: "kenzi-tower-casablanca",
@@ -33,7 +37,9 @@ export const hotels: Hotel[] = [
     prix: "1800 DH",
     ville: "Casablanca",
     distance: "3 km",
-    stadeId: "complexe-mohamed-v"
+    stadeId: "complexe-mohamed-v",
+    adresse: "Twin Center, Boulevard Al Massira, Casablanca 20100",
+    telephone: "+212 522-97-8000"
   },
   
   // Hôtels près du Stade Moulay Abdellah (Rabat)
@@ -46,7 +52,9 @@ export const hotels: Hotel[] = [
     prix: "1600 DH",
     ville: "Rabat",
     distance: "4 km",
-    stadeId: "stade-moulay-abdellah"
+    stadeId: "stade-moulay-abdellah",
+    adresse: "Souissi, BP 450, Rabat 10000",
+    telephone: "+212 537-67-5656"
   },
   {
     id: "riad-dar-el-kebira",
@@ -57,7 +65,9 @@ export const hotels: Hotel[] = [
     prix: "1200 DH",
     ville: "Rabat",
     distance: "5.5 km",
-    stadeId: "stade-moulay-abdellah"
+    stadeId: "stade-moulay-abdellah",
+    adresse: "9 Rue Dar El Kebira, Rabat 10030",
+    telephone: "+212 537-72-0981"
   },
   
   // Hôtels près du Stade Ibn Batouta (Tanger)
@@ -70,7 +80,9 @@ export const hotels: Hotel[] = [
     prix: "1400 DH",
     ville: "Tanger",
     distance: "3.2 km",
-    stadeId: "stade-ibn-batouta"
+    stadeId: "stade-ibn-batouta",
+    adresse: "Place du Maghreb Arabe, Tanger 90000",
+    telephone: "+212 539-34-8700"
   },
   {
     id: "fairmont-tanger",
@@ -81,7 +93,9 @@ export const hotels: Hotel[] = [
     prix: "2000 DH",
     ville: "Tanger",
     distance: "4 km",
-    stadeId: "stade-ibn-batouta"
+    stadeId: "stade-ibn-batouta",
+    adresse: "Route de la Plage, Tanger 90000",
+    telephone: "+212 539-34-1234"
   },
   
   // Hôtels près du Stade d'Adrar (Agadir)
@@ -94,7 +108,9 @@ export const hotels: Hotel[] = [
     prix: "1200 DH",
     ville: "Agadir",
     distance: "2 km",
-    stadeId: "stade-adrar"
+    stadeId: "stade-adrar",
+    adresse: "Cité Founty, Agadir 80010",
+    telephone: "+212 528-23-1234"
   },
   {
     id: "atlantic-palace-agadir",
@@ -105,7 +121,9 @@ export const hotels: Hotel[] = [
     prix: "1700 DH",
     ville: "Agadir",
     distance: "3.5 km",
-    stadeId: "stade-adrar"
+    stadeId: "stade-adrar",
+    adresse: "Secteur Touristique et Balnéaire, Agadir 80000",
+    telephone: "+212 528-84-1919"
   },
   
   // Hôtels près du Stade de Marrakech
@@ -118,7 +136,9 @@ export const hotels: Hotel[] = [
     prix: "2500 DH",
     ville: "Marrakech",
     distance: "3 km",
-    stadeId: "stade-marrakech"
+    stadeId: "stade-marrakech",
+    adresse: "1 Boulevard de la Menara, Marrakech 40000",
+    telephone: "+212 524-35-9200"
   },
   {
     id: "les-jardins-de-la-koutoubia",
@@ -129,7 +149,9 @@ export const hotels: Hotel[] = [
     prix: "2200 DH",
     ville: "Marrakech",
     distance: "4.5 km",
-    stadeId: "stade-marrakech"
+    stadeId: "stade-marrakech",
+    adresse: "26 Rue de la Koutoubia, Marrakech 40000",
+    telephone: "+212 524-38-8800"
   },
   
   // Hôtels près du Complexe Sportif de Fès
@@ -142,7 +164,9 @@ export const hotels: Hotel[] = [
     prix: "1900 DH",
     ville: "Fès",
     distance: "4 km",
-    stadeId: "stade-fes"
+    stadeId: "stade-fes",
+    adresse: "16 Derb Ben Slimane, Fès 30000",
+    telephone: "+212 535-63-8982"
   },
   {
     id: "riad-fes",
@@ -153,7 +177,9 @@ export const hotels: Hotel[] = [
     prix: "2100 DH",
     ville: "Fès",
     distance: "5 km",
-    stadeId: "stade-fes"
+    stadeId: "stade-fes",
+    adresse: "5 Derb Ben Slimane, Zerbtana, Fès 30000",
+    telephone: "+212 535-74-1206"
   },
   
   // Hôtels près du Stade Municipal de Larache
@@ -166,7 +192,9 @@ export const hotels: Hotel[] = [
     prix: "950 DH",
     ville: "Larache",
     distance: "1.5 km",
-    stadeId: "stade-larache"
+    stadeId: "stade-larache",
+    adresse: "Avenue Mohammed V, Larache 92000",
+    telephone: "+212 539-91-1234"
   },
   {
     id: "marina-bay-larache",
@@ -177,7 +205,9 @@ export const hotels: Hotel[] = [
     prix: "1100 DH",
     ville: "Larache",
     distance: "2 km",
-    stadeId: "stade-larache"
+    stadeId: "stade-larache",
+    adresse: "Boulevard de la Corniche, Larache 92000",
+    telephone: "+212 539-91-5678"
   }
 ];
 
