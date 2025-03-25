@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -23,6 +23,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
+import { Hotel } from "@/data/hotels";
 
 const formSchema = z.object({
   nom: z.string().min(2, { message: "Le nom doit contenir au moins 2 caractères" }),
@@ -33,6 +34,8 @@ const formSchema = z.object({
   ville: z.string().min(2, { message: "La ville doit contenir au moins 2 caractères" }),
   distance: z.string().min(1, { message: "La distance est requise" }),
   stadeId: z.string().min(1, { message: "Le stade associé est requis" }),
+  adresse: z.string().optional(),
+  telephone: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -41,9 +44,10 @@ interface HotelFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (data: FormValues) => void;
+  editingHotel?: Hotel | null;
 }
 
-export function HotelFormDialog({ open, onOpenChange, onSubmit }: HotelFormDialogProps) {
+export function HotelFormDialog({ open, onOpenChange, onSubmit, editingHotel }: HotelFormDialogProps) {
   const { toast } = useToast();
   
   const form = useForm<FormValues>({
@@ -57,8 +61,41 @@ export function HotelFormDialog({ open, onOpenChange, onSubmit }: HotelFormDialo
       ville: "",
       distance: "",
       stadeId: "",
+      adresse: "",
+      telephone: "",
     },
   });
+
+  // Mettre à jour le formulaire quand editingHotel change
+  useEffect(() => {
+    if (editingHotel) {
+      form.reset({
+        nom: editingHotel.nom || "",
+        description: editingHotel.description || "",
+        etoiles: editingHotel.etoiles || 3,
+        image: editingHotel.image || "",
+        prix: editingHotel.prix || "",
+        ville: editingHotel.ville || "",
+        distance: editingHotel.distance || "",
+        stadeId: editingHotel.stadeId || "",
+        adresse: editingHotel.adresse || "",
+        telephone: editingHotel.telephone || "",
+      });
+    } else {
+      form.reset({
+        nom: "",
+        description: "",
+        etoiles: 3,
+        image: "",
+        prix: "",
+        ville: "",
+        distance: "",
+        stadeId: "",
+        adresse: "",
+        telephone: "",
+      });
+    }
+  }, [editingHotel, form]);
 
   const handleSubmit = async (data: FormValues) => {
     try {
@@ -68,8 +105,10 @@ export function HotelFormDialog({ open, onOpenChange, onSubmit }: HotelFormDialo
       form.reset();
       onOpenChange(false);
       toast({
-        title: "Hôtel ajouté",
-        description: `L'hôtel ${data.nom} a été ajouté avec succès.`,
+        title: editingHotel ? "Hôtel modifié" : "Hôtel ajouté",
+        description: editingHotel 
+          ? `L'hôtel ${data.nom} a été modifié avec succès.`
+          : `L'hôtel ${data.nom} a été ajouté avec succès.`,
       });
     } catch (error) {
       console.error('Error adding hotel:', error);
@@ -93,9 +132,11 @@ export function HotelFormDialog({ open, onOpenChange, onSubmit }: HotelFormDialo
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
-          <DialogTitle>Ajouter un nouvel hôtel</DialogTitle>
+          <DialogTitle>{editingHotel ? "Modifier un hôtel" : "Ajouter un nouvel hôtel"}</DialogTitle>
           <DialogDescription>
-            Remplissez le formulaire pour ajouter un nouvel hôtel partenaire.
+            {editingHotel 
+              ? "Modifiez les informations de l'hôtel existant."
+              : "Remplissez le formulaire pour ajouter un nouvel hôtel partenaire."}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -184,6 +225,34 @@ export function HotelFormDialog({ open, onOpenChange, onSubmit }: HotelFormDialo
                   </FormItem>
                 )}
               />
+              
+              <FormField
+                control={form.control}
+                name="adresse"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Adresse</FormLabel>
+                    <FormControl>
+                      <Input placeholder="123 Avenue Mohammed V" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="telephone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Téléphone</FormLabel>
+                    <FormControl>
+                      <Input placeholder="+212 522 123 456" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
             
             <FormField
@@ -222,7 +291,7 @@ export function HotelFormDialog({ open, onOpenChange, onSubmit }: HotelFormDialo
               <Button type="button" variant="outline" onClick={handleReset}>
                 Réinitialiser
               </Button>
-              <Button type="submit">Confirmer</Button>
+              <Button type="submit">{editingHotel ? "Mettre à jour" : "Confirmer"}</Button>
             </DialogFooter>
           </form>
         </Form>

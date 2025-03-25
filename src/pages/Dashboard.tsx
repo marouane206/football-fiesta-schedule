@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
-import { matches } from '@/data/matches';
-import { stades } from '@/data/stades';
-import { equipes } from '@/data/equipes';
-import { hotels } from '@/data/hotels';
-import { restaurants } from '@/data/restaurants';
+import { matches, Match } from '@/data/matches';
+import { stades, Stade } from '@/data/stades';
+import { equipes, Equipe } from '@/data/equipes';
+import { hotels, Hotel } from '@/data/hotels';
+import { restaurants, Restaurant } from '@/data/restaurants';
 import { Sidebar, SidebarContent, SidebarProvider, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from '@/components/ui/sidebar';
-import { Calendar, Home, BarChart3, MapPin, Shield, Users, Hotel, LogOut, Plus, Utensils, Edit, Trash2 } from 'lucide-react';
+import { Calendar, Home, BarChart3, MapPin, Shield, Users, Hotel as HotelIcon, LogOut, Plus, Utensils, Edit, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -47,7 +47,8 @@ type NewMatchData = {
   date: string;
   heure: string;
   stade: string;
-  phase: string;
+  phase: "Groupe" | "Huitièmes" | "Quarts" | "Demi-finales" | "Match pour la 3e place" | "Finale";
+  groupe?: string;
 };
 
 type NewStadeData = {
@@ -57,6 +58,10 @@ type NewStadeData = {
   image: string;
   description: string;
   anneeConstruction: number;
+  coordonnees: {
+    lat: number;
+    lng: number;
+  };
 };
 
 type NewEquipeData = {
@@ -64,6 +69,9 @@ type NewEquipeData = {
   drapeau: string;
   groupe: string;
   confederation: string;
+  abreviation: string;
+  entraineur: string;
+  rang: number;
 };
 
 type NewUserData = {
@@ -285,7 +293,7 @@ const Dashboard = () => {
         
         setEditingItemId(null);
       } else {
-        const newMatch = {
+        const newMatch: Match = {
           id: `match-${Date.now()}`,
           ...matchData
         };
@@ -323,7 +331,7 @@ const Dashboard = () => {
         
         setEditingItemId(null);
       } else {
-        const newStade = {
+        const newStade: Stade = {
           id: stadeData.nom.toLowerCase().replace(/\s+/g, '-'),
           ...stadeData
         };
@@ -361,7 +369,7 @@ const Dashboard = () => {
         
         setEditingItemId(null);
       } else {
-        const newEquipe = {
+        const newEquipe: Equipe = {
           id: equipeData.nom.toLowerCase().replace(/\s+/g, '-'),
           ...equipeData
         };
@@ -1040,201 +1048,5 @@ const Dashboard = () => {
                       isActive={activeSection === 'hotels'}
                       onClick={() => setActiveSection('hotels')}
                     >
-                      <Hotel className="h-4 w-4" />
-                      <span>Hotels</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarContent>
-              <SidebarFooter>
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton onClick={handleLogout} tooltip="Déconnexion">
-                      <LogOut className="h-4 w-4" />
-                      <span>Déconnexion</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarFooter>
-            </Sidebar>
-            
-            <motion.div 
-              className="flex-1 p-6 md:p-8 bg-gray-50 dark:bg-gray-900"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              key={activeSection}
-            >
-              {renderContent()}
-            </motion.div>
-          </div>
-        </SidebarProvider>
-      )}
+                      <HotelIcon
 
-      <HotelFormDialog 
-        open={showHotelForm} 
-        onOpenChange={setShowHotelForm} 
-        onSubmit={handleAddHotel}
-        editingHotel={editingItemId ? hotelsList.find(h => h.id === editingItemId) || null : null}
-      />
-      
-      {showRestaurantForm && (
-        <AlertDialog open={showRestaurantForm} onOpenChange={setShowRestaurantForm}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>{editingItemId ? "Modifier le restaurant" : "Ajouter un restaurant"}</AlertDialogTitle>
-              <AlertDialogDescription>
-                {editingItemId 
-                  ? "Modifiez les détails du restaurant existant."
-                  : "Remplissez les informations pour ajouter un nouveau restaurant."}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Annuler</AlertDialogCancel>
-              <AlertDialogAction onClick={() => {
-                const mockData: NewRestaurantData = {
-                  nom: editingItemId ? restaurantsList.find(r => r.id === editingItemId)?.nom || "Nouveau Restaurant" : "Nouveau Restaurant",
-                  description: "Description du restaurant",
-                  cuisine: "Marocaine",
-                  prixMoyen: "200-300 MAD",
-                  adresse: "Adresse du restaurant",
-                  distance: "10 minutes du stade",
-                  note: 4.5,
-                  image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=2070&auto=format&fit=crop",
-                  stadeId: "complexe-mohamed-v",
-                  horaires: "Tous les jours de 12h à 23h",
-                  telephone: "+212 522 123 456"
-                };
-                handleAddRestaurant(mockData);
-              }}>
-                {editingItemId ? "Modifier" : "Ajouter"}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      )}
-
-      {showMatchForm && (
-        <AlertDialog open={showMatchForm} onOpenChange={setShowMatchForm}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>{editingItemId ? "Modifier le match" : "Ajouter un match"}</AlertDialogTitle>
-              <AlertDialogDescription>
-                {editingItemId 
-                  ? "Modifiez les détails du match existant."
-                  : "Remplissez les informations pour ajouter un nouveau match."}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Annuler</AlertDialogCancel>
-              <AlertDialogAction onClick={() => {
-                const mockData: NewMatchData = {
-                  equipe1: "Maroc",
-                  equipe2: "Sénégal",
-                  date: "2025-01-15",
-                  heure: "20:00",
-                  stade: "Complexe Sportif Mohammed V",
-                  phase: "Phase de groupes"
-                };
-                handleAddMatch(mockData);
-              }}>
-                {editingItemId ? "Modifier" : "Ajouter"}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      )}
-
-      {showStadeForm && (
-        <AlertDialog open={showStadeForm} onOpenChange={setShowStadeForm}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>{editingItemId ? "Modifier le stade" : "Ajouter un stade"}</AlertDialogTitle>
-              <AlertDialogDescription>
-                {editingItemId 
-                  ? "Modifiez les détails du stade existant."
-                  : "Remplissez les informations pour ajouter un nouveau stade."}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Annuler</AlertDialogCancel>
-              <AlertDialogAction onClick={() => {
-                const mockData: NewStadeData = {
-                  nom: "Nouveau Stade",
-                  ville: "Casablanca",
-                  capacite: 60000,
-                  image: "https://images.unsplash.com/photo-1509719782226-44d588b0d574?q=80&w=2070&auto=format&fit=crop",
-                  description: "Un nouveau stade moderne",
-                  anneeConstruction: 2023
-                };
-                handleAddStade(mockData);
-              }}>
-                {editingItemId ? "Modifier" : "Ajouter"}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      )}
-
-      {showEquipeForm && (
-        <AlertDialog open={showEquipeForm} onOpenChange={setShowEquipeForm}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>{editingItemId ? "Modifier l'équipe" : "Ajouter une équipe"}</AlertDialogTitle>
-              <AlertDialogDescription>
-                {editingItemId 
-                  ? "Modifiez les détails de l'équipe existante."
-                  : "Remplissez les informations pour ajouter une nouvelle équipe."}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Annuler</AlertDialogCancel>
-              <AlertDialogAction onClick={() => {
-                const mockData: NewEquipeData = {
-                  nom: "Nouvelle Équipe",
-                  drapeau: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Flag_of_Morocco.svg/800px-Flag_of_Morocco.svg.png",
-                  groupe: "A",
-                  confederation: "CAF"
-                };
-                handleAddEquipe(mockData);
-              }}>
-                {editingItemId ? "Modifier" : "Ajouter"}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      )}
-
-      {showUserForm && (
-        <AlertDialog open={showUserForm} onOpenChange={setShowUserForm}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>{editingItemId ? "Modifier l'utilisateur" : "Ajouter un utilisateur"}</AlertDialogTitle>
-              <AlertDialogDescription>
-                {editingItemId 
-                  ? "Modifiez les détails de l'utilisateur existant."
-                  : "Remplissez les informations pour ajouter un nouvel utilisateur."}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Annuler</AlertDialogCancel>
-              <AlertDialogAction onClick={() => {
-                const mockData: NewUserData = {
-                  username: "nouvel_admin",
-                  password: "********",
-                  role: "admin"
-                };
-                handleAddUser(mockData);
-              }}>
-                {editingItemId ? "Modifier" : "Ajouter"}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      )}
-    </>
-  );
-};
-
-export default Dashboard;
