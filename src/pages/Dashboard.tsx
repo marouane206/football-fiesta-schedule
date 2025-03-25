@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
@@ -749,7 +748,7 @@ const Dashboard = () => {
                 </div>
                 <div className="flex items-center space-x-2">
                   <Badge>{restaurant.cuisine}</Badge>
-                  <Badge variant="outline">{restaurant.ville}</Badge>
+                  <Badge variant="outline">{restaurant.stadeId}</Badge>
                   <div className="flex space-x-2">
                     <Button variant="outline" size="sm" onClick={() => handleEdit('restaurant', restaurant.id)}>
                       <Edit className="h-4 w-4" />
