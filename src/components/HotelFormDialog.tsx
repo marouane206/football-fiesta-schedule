@@ -21,9 +21,12 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { Hotel } from "@/data/hotels";
+import { Building, Star, MapPin, Phone, CircleDollarSign, Home, Map, BadgeCheck } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const formSchema = z.object({
   nom: z.string().min(2, { message: "Le nom doit contenir au moins 2 caractères" }),
@@ -36,6 +39,9 @@ const formSchema = z.object({
   stadeId: z.string().min(1, { message: "Le stade associé est requis" }),
   adresse: z.string().optional(),
   telephone: z.string().optional(),
+  wifi: z.boolean().optional().default(true),
+  parking: z.boolean().optional().default(false),
+  piscine: z.boolean().optional().default(false),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -63,6 +69,9 @@ export function HotelFormDialog({ open, onOpenChange, onSubmit, editingHotel }: 
       stadeId: "",
       adresse: "",
       telephone: "",
+      wifi: true,
+      parking: false,
+      piscine: false,
     },
   });
 
@@ -80,6 +89,9 @@ export function HotelFormDialog({ open, onOpenChange, onSubmit, editingHotel }: 
         stadeId: editingHotel.stadeId || "",
         adresse: editingHotel.adresse || "",
         telephone: editingHotel.telephone || "",
+        wifi: editingHotel.wifi || true,
+        parking: editingHotel.parking || false,
+        piscine: editingHotel.piscine || false,
       });
     } else {
       form.reset({
@@ -93,13 +105,15 @@ export function HotelFormDialog({ open, onOpenChange, onSubmit, editingHotel }: 
         stadeId: "",
         adresse: "",
         telephone: "",
+        wifi: true,
+        parking: false,
+        piscine: false,
       });
     }
   }, [editingHotel, form]);
 
   const handleSubmit = async (data: FormValues) => {
     try {
-      // Simule l'ajout d'un nouvel hôtel localement
       onSubmit(data);
       
       form.reset();
@@ -130,26 +144,272 @@ export function HotelFormDialog({ open, onOpenChange, onSubmit, editingHotel }: 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
-        <DialogHeader>
-          <DialogTitle>{editingHotel ? "Modifier un hôtel" : "Ajouter un nouvel hôtel"}</DialogTitle>
-          <DialogDescription>
+      <DialogContent className="sm:max-w-[600px] bg-gradient-to-br from-white to-blue-50 dark:from-gray-900 dark:to-blue-950 border-none shadow-lg">
+        <DialogHeader className="space-y-3">
+          <DialogTitle className="text-2xl font-bold flex items-center gap-2 text-blue-600">
+            <Building className="h-6 w-6" />
+            {editingHotel ? "Modifier un hôtel" : "Ajouter un nouvel hôtel"}
+          </DialogTitle>
+          <DialogDescription className="text-base">
             {editingHotel 
               ? "Modifiez les informations de l'hôtel existant."
               : "Remplissez le formulaire pour ajouter un nouvel hôtel partenaire."}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+            <div className="space-y-4">
               <FormField
                 control={form.control}
                 name="nom"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nom de l'hôtel</FormLabel>
+                    <FormLabel className="flex items-center gap-2 text-blue-600">
+                      <Building className="h-4 w-4" />
+                      Nom de l'hôtel
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder="Four Seasons" {...field} />
+                      <Input 
+                        placeholder="Four Seasons" 
+                        {...field} 
+                        className="border-blue-500/30 focus-visible:ring-blue-500/50"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="ville"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2 text-purple-600">
+                        <Map className="h-4 w-4" />
+                        Ville
+                      </FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Casablanca" 
+                          {...field} 
+                          className="border-purple-500/30 focus-visible:ring-purple-500/50"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="etoiles"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2 text-yellow-600">
+                        <Star className="h-4 w-4" />
+                        Nombre d'étoiles (1-5)
+                      </FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="number" 
+                          min="1" 
+                          max="5" 
+                          {...field} 
+                          className="border-yellow-500/30 focus-visible:ring-yellow-500/50"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="prix"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2 text-green-600">
+                        <CircleDollarSign className="h-4 w-4" />
+                        Prix par nuit
+                      </FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="1500 DH" 
+                          {...field} 
+                          className="border-green-500/30 focus-visible:ring-green-500/50"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="distance"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2 text-red-500">
+                        <MapPin className="h-4 w-4" />
+                        Distance du stade
+                      </FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="2.5 km" 
+                          {...field} 
+                          className="border-red-500/30 focus-visible:ring-red-500/50"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="stadeId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2 text-orange-500">
+                        <Home className="h-4 w-4" />
+                        ID du stade associé
+                      </FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="stade-marrakech" 
+                          {...field} 
+                          className="border-orange-500/30 focus-visible:ring-orange-500/50"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="adresse"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2 text-teal-600">
+                        <MapPin className="h-4 w-4" />
+                        Adresse
+                      </FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="123 Avenue Mohammed V" 
+                          {...field} 
+                          className="border-teal-500/30 focus-visible:ring-teal-500/50"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="telephone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center gap-2 text-indigo-500">
+                        <Phone className="h-4 w-4" />
+                        Téléphone
+                      </FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="+212 522 123 456" 
+                          {...field} 
+                          className="border-indigo-500/30 focus-visible:ring-indigo-500/50"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                <FormField
+                  control={form.control}
+                  name="wifi"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>WiFi</FormLabel>
+                        <FormDescription className="text-xs">
+                          WiFi gratuit disponible
+                        </FormDescription>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="parking"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>Parking</FormLabel>
+                        <FormDescription className="text-xs">
+                          Parking gratuit disponible
+                        </FormDescription>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="piscine"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow-sm">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>Piscine</FormLabel>
+                        <FormDescription className="text-xs">
+                          Piscine disponible
+                        </FormDescription>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+              <FormField
+                control={form.control}
+                name="image"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center gap-2 text-blue-600">
+                      URL de l'image
+                    </FormLabel>
+                    <FormControl>
+                      <Input 
+                        placeholder="https://example.com/image.jpg" 
+                        {...field} 
+                        className="border-blue-500/30 focus-visible:ring-blue-500/50"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -158,96 +418,18 @@ export function HotelFormDialog({ open, onOpenChange, onSubmit, editingHotel }: 
               
               <FormField
                 control={form.control}
-                name="ville"
+                name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Ville</FormLabel>
+                    <FormLabel className="flex items-center gap-2 text-blue-600">
+                      Description
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder="Casablanca" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="etoiles"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Nombre d'étoiles (1-5)</FormLabel>
-                    <FormControl>
-                      <Input type="number" min="1" max="5" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="prix"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Prix par nuit</FormLabel>
-                    <FormControl>
-                      <Input placeholder="1500 DH" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="distance"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Distance du stade</FormLabel>
-                    <FormControl>
-                      <Input placeholder="2.5 km" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="stadeId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>ID du stade associé</FormLabel>
-                    <FormControl>
-                      <Input placeholder="stade-marrakech" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="adresse"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Adresse</FormLabel>
-                    <FormControl>
-                      <Input placeholder="123 Avenue Mohammed V" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="telephone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Téléphone</FormLabel>
-                    <FormControl>
-                      <Input placeholder="+212 522 123 456" {...field} />
+                      <Textarea 
+                        placeholder="Décrivez l'hôtel, ses commodités et services..." 
+                        className="min-h-[120px] border-blue-500/30 focus-visible:ring-blue-500/50 resize-none"
+                        {...field} 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -255,43 +437,13 @@ export function HotelFormDialog({ open, onOpenChange, onSubmit, editingHotel }: 
               />
             </div>
             
-            <FormField
-              control={form.control}
-              name="image"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>URL de l'image</FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://example.com/image.jpg" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="Décrivez l'hôtel, ses commodités et services..." 
-                      className="min-h-[100px]"
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <DialogFooter className="flex justify-between">
-              <Button type="button" variant="outline" onClick={handleReset}>
+            <DialogFooter className="flex flex-col sm:flex-row sm:justify-between gap-3 pt-2">
+              <Button type="button" variant="outline" onClick={handleReset} className="w-full sm:w-auto">
                 Réinitialiser
               </Button>
-              <Button type="submit">{editingHotel ? "Mettre à jour" : "Confirmer"}</Button>
+              <Button type="submit" className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-indigo-600 hover:to-blue-600 transition-all duration-300">
+                {editingHotel ? "Mettre à jour" : "Confirmer"}
+              </Button>
             </DialogFooter>
           </form>
         </Form>

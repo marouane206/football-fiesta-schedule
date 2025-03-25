@@ -1,17 +1,17 @@
-
 export interface Restaurant {
   id: string;
   nom: string;
-  description: string;
   cuisine: string;
-  prixMoyen: string;
+  description: string;
   adresse: string;
-  distance: string;
   note: number;
+  distance: string;
+  prixMoyen: string;
+  horaires?: string;
+  telephone?: string;
   image: string;
   stadeId: string;
-  horaires: string;
-  telephone: string;
+  vegOptions?: boolean;
 }
 
 export const restaurants: Restaurant[] = [
