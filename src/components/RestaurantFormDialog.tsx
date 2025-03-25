@@ -140,7 +140,7 @@ export function RestaurantFormDialog({ open, onOpenChange, onSubmit, editingRest
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 border-none shadow-lg">
+      <DialogContent className="sm:max-w-[600px] bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 border-none shadow-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader className="space-y-3">
           <DialogTitle className="text-2xl font-bold flex items-center gap-2 text-caf-green">
             <Utensils className="h-6 w-6" />
@@ -410,11 +410,19 @@ export function RestaurantFormDialog({ open, onOpenChange, onSubmit, editingRest
               />
             </div>
             
-            <DialogFooter className="flex flex-col sm:flex-row sm:justify-between gap-3 pt-2">
-              <Button type="button" variant="outline" onClick={handleReset} className="w-full sm:w-auto">
+            <DialogFooter className="flex flex-col sm:flex-row sm:justify-between gap-3 pt-4 mt-6 border-t border-gray-100 dark:border-gray-800">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={handleReset} 
+                className="w-full sm:w-auto border-2 border-gray-300 hover:bg-gray-100 dark:border-gray-700 dark:hover:bg-gray-800"
+              >
                 Réinitialiser
               </Button>
-              <Button type="submit" className="w-full sm:w-auto bg-gradient-to-r from-caf-green to-emerald-600 hover:from-emerald-600 hover:to-caf-green transition-all duration-300">
+              <Button 
+                type="submit" 
+                className="w-full sm:w-auto bg-gradient-to-r from-caf-green to-emerald-600 hover:from-emerald-600 hover:to-caf-green transition-all duration-300 shadow-md"
+              >
                 {editingRestaurant ? "Mettre à jour" : "Confirmer"}
               </Button>
             </DialogFooter>
