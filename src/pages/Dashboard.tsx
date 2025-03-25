@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
@@ -5,16 +6,28 @@ import { matches } from '@/data/matches';
 import { stades } from '@/data/stades';
 import { equipes } from '@/data/equipes';
 import { hotels } from '@/data/hotels';
+import { restaurants } from '@/data/restaurants';
 import { Sidebar, SidebarContent, SidebarProvider, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from '@/components/ui/sidebar';
-import { Calendar, Home, BarChart3, MapPin, Shield, Users, Hotel, LogOut, Plus } from 'lucide-react';
+import { Calendar, Home, BarChart3, MapPin, Shield, Users, Hotel, LogOut, Plus, Utensils, Edit, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import AdminLogin from '@/components/AdminLogin';
 import { HotelFormDialog } from '@/components/HotelFormDialog';
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
-type AdminSection = 'dashboard' | 'matches' | 'stades' | 'equipes' | 'utilisateurs' | 'hotels';
+type AdminSection = 'dashboard' | 'matches' | 'stades' | 'equipes' | 'utilisateurs' | 'hotels' | 'restaurants';
 
 type NewHotelData = {
   nom: string;
@@ -25,6 +38,8 @@ type NewHotelData = {
   ville: string;
   distance: string;
   stadeId: string;
+  adresse?: string;
+  telephone?: string;
 };
 
 // Définition des données de formulaire pour le type Match
@@ -62,6 +77,21 @@ type NewUserData = {
   role: string;
 };
 
+// Définition des données de formulaire pour le type Restaurant
+type NewRestaurantData = {
+  nom: string;
+  description: string;
+  cuisine: string;
+  prixMoyen: string;
+  adresse: string;
+  distance: string;
+  note: number;
+  image: string;
+  stadeId: string;
+  horaires: string;
+  telephone: string;
+};
+
 const Dashboard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeSection, setActiveSection] = useState<AdminSection>('dashboard');
@@ -70,7 +100,12 @@ const Dashboard = () => {
   const [showStadeForm, setShowStadeForm] = useState(false);
   const [showEquipeForm, setShowEquipeForm] = useState(false);
   const [showUserForm, setShowUserForm] = useState(false);
+  const [showRestaurantForm, setShowRestaurantForm] = useState(false);
   const [hotelsList, setHotelsList] = useState(hotels);
+  const [matchesList, setMatchesList] = useState(matches);
+  const [stadesList, setStadesList] = useState(stades);
+  const [equipesList, setEquipesList] = useState(equipes);
+  const [restaurantsList, setRestaurantsList] = useState(restaurants);
   const { toast } = useToast();
   
   const data = [
@@ -101,6 +136,49 @@ const Dashboard = () => {
     }
   };
 
+  // Fonctions génériques pour la suppression des entités
+  const handleDelete = (type: string, id: string) => {
+    try {
+      switch (type) {
+        case 'match':
+          setMatchesList(prev => prev.filter(item => item.id !== id));
+          break;
+        case 'stade':
+          setStadesList(prev => prev.filter(item => item.id !== id));
+          break;
+        case 'equipe':
+          setEquipesList(prev => prev.filter(item => item.id !== id));
+          break;
+        case 'hotel':
+          setHotelsList(prev => prev.filter(item => item.id !== id));
+          break;
+        case 'restaurant':
+          setRestaurantsList(prev => prev.filter(item => item.id !== id));
+          break;
+      }
+      
+      toast({
+        title: "Supprimé avec succès",
+        description: `L'élément a été supprimé avec succès.`,
+      });
+    } catch (error) {
+      console.error('Error deleting item:', error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur s'est produite lors de la suppression.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Fonctions pour l'édition des entités (à implémenter plus tard)
+  const handleEdit = (type: string, id: string) => {
+    toast({
+      title: "Fonctionnalité à venir",
+      description: `L'édition de ${type} sera disponible prochainement.`,
+    });
+  };
+
   const handleAddHotel = (hotelData: NewHotelData) => {
     try {
       const newHotel = {
@@ -115,6 +193,8 @@ const Dashboard = () => {
         title: "Hôtel ajouté",
         description: `L'hôtel ${hotelData.nom} a été ajouté avec succès.`,
       });
+      
+      setShowHotelForm(false);
     } catch (error) {
       console.error('Error updating hotels list:', error);
       toast({
@@ -125,7 +205,14 @@ const Dashboard = () => {
     }
   };
 
-  // Fonctions pour gérer l'ajout des différentes entités (à implémenter plus tard)
+  const handleAddRestaurant = () => {
+    setShowRestaurantForm(false);
+    toast({
+      title: "Fonctionnalité à venir",
+      description: "L'ajout de restaurant sera disponible prochainement.",
+    });
+  };
+
   const handleAddMatch = () => {
     setShowMatchForm(false);
     toast({
@@ -298,11 +385,11 @@ const Dashboard = () => {
       <Card>
         <CardHeader>
           <CardTitle>Liste des Matches</CardTitle>
-          <CardDescription>Total: {matches.length} matches programmés</CardDescription>
+          <CardDescription>Total: {matchesList.length} matches programmés</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {matches.map((match) => (
+            {matchesList.map((match) => (
               <div key={match.id} className="flex items-center justify-between border-b pb-2">
                 <div className="flex items-center space-x-3">
                   <div className="font-medium">
@@ -312,6 +399,32 @@ const Dashboard = () => {
                 <div className="flex items-center space-x-2">
                   <Badge>{new Date(match.date).toLocaleDateString()}</Badge>
                   <Badge variant="secondary">{match.stade}</Badge>
+                  <div className="flex space-x-2">
+                    <Button variant="outline" size="sm" onClick={() => handleEdit('match', match.id)}>
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="outline" size="sm" className="text-destructive">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Cette action ne peut pas être annulée. Voulez-vous vraiment supprimer ce match ?
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Annuler</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => handleDelete('match', match.id)}>
+                            Confirmer
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
                 </div>
               </div>
             ))}
@@ -336,19 +449,45 @@ const Dashboard = () => {
       <Card>
         <CardHeader>
           <CardTitle>Liste des Stades</CardTitle>
-          <CardDescription>Total: {stades.length} stades</CardDescription>
+          <CardDescription>Total: {stadesList.length} stades</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {stades.map((stade) => (
+            {stadesList.map((stade) => (
               <div key={stade.id} className="flex items-center justify-between border-b pb-2">
                 <div className="flex items-center space-x-3">
                   <div className="font-medium">
                     {stade.nom}
                   </div>
                 </div>
-                <div>
+                <div className="flex items-center space-x-2">
                   <Badge variant="secondary">{stade.ville}</Badge>
+                  <div className="flex space-x-2">
+                    <Button variant="outline" size="sm" onClick={() => handleEdit('stade', stade.id)}>
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="outline" size="sm" className="text-destructive">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Cette action ne peut pas être annulée. Voulez-vous vraiment supprimer ce stade ?
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Annuler</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => handleDelete('stade', stade.id)}>
+                            Confirmer
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
                 </div>
               </div>
             ))}
@@ -373,19 +512,45 @@ const Dashboard = () => {
       <Card>
         <CardHeader>
           <CardTitle>Liste des Équipes</CardTitle>
-          <CardDescription>Total: {equipes.length} équipes qualifiées</CardDescription>
+          <CardDescription>Total: {equipesList.length} équipes qualifiées</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {equipes.map((equipe) => (
+            {equipesList.map((equipe) => (
               <div key={equipe.id} className="flex items-center justify-between border-b pb-2">
                 <div className="flex items-center space-x-3">
                   <div className="font-medium">
                     {equipe.nom}
                   </div>
                 </div>
-                <div>
+                <div className="flex items-center space-x-2">
                   <Badge variant="secondary">Groupe {equipe.groupe}</Badge>
+                  <div className="flex space-x-2">
+                    <Button variant="outline" size="sm" onClick={() => handleEdit('equipe', equipe.id)}>
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="outline" size="sm" className="text-destructive">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Cette action ne peut pas être annulée. Voulez-vous vraiment supprimer cette équipe ?
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Annuler</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => handleDelete('equipe', equipe.id)}>
+                            Confirmer
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
                 </div>
               </div>
             ))}
@@ -420,8 +585,34 @@ const Dashboard = () => {
                   admin
                 </div>
               </div>
-              <div>
+              <div className="flex items-center space-x-2">
                 <Badge variant="success">Administrateur</Badge>
+                <div className="flex space-x-2">
+                  <Button variant="outline" size="sm" onClick={() => handleEdit('user', 'admin')}>
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="outline" size="sm" className="text-destructive">
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Cette action ne peut pas être annulée. Voulez-vous vraiment supprimer cet utilisateur ?
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Annuler</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => handleDelete('user', 'admin')}>
+                          Confirmer
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
               </div>
             </div>
             <div className="flex items-center justify-between border-b pb-2">
@@ -430,8 +621,34 @@ const Dashboard = () => {
                   demo
                 </div>
               </div>
-              <div>
+              <div className="flex items-center space-x-2">
                 <Badge variant="secondary">Démo</Badge>
+                <div className="flex space-x-2">
+                  <Button variant="outline" size="sm" onClick={() => handleEdit('user', 'demo')}>
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="outline" size="sm" className="text-destructive">
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Cette action ne peut pas être annulée. Voulez-vous vraiment supprimer cet utilisateur ?
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Annuler</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => handleDelete('user', 'demo')}>
+                          Confirmer
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
               </div>
             </div>
           </div>
@@ -466,21 +683,105 @@ const Dashboard = () => {
                     {hotel.nom}
                   </div>
                 </div>
-                <div className="flex space-x-2">
+                <div className="flex items-center space-x-2">
                   <Badge>{hotel.ville}</Badge>
                   <Badge variant="outline">{hotel.etoiles} étoiles</Badge>
+                  <div className="flex space-x-2">
+                    <Button variant="outline" size="sm" onClick={() => handleEdit('hotel', hotel.id)}>
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="outline" size="sm" className="text-destructive">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Cette action ne peut pas être annulée. Voulez-vous vraiment supprimer cet hôtel ?
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Annuler</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => handleDelete('hotel', hotel.id)}>
+                            Confirmer
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         </CardContent>
       </Card>
+    </div>
+  );
+
+  const renderRestaurantsContent = () => (
+    <div className="flex flex-col space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Restaurants</h1>
+          <p className="text-muted-foreground">Gestion des restaurants partenaires</p>
+        </div>
+        <Button onClick={() => setShowRestaurantForm(true)}>
+          <Plus className="mr-2 h-4 w-4" /> Ajouter un restaurant
+        </Button>
+      </div>
       
-      <HotelFormDialog 
-        open={showHotelForm} 
-        onOpenChange={setShowHotelForm} 
-        onSubmit={handleAddHotel} 
-      />
+      <Card>
+        <CardHeader>
+          <CardTitle>Liste des Restaurants</CardTitle>
+          <CardDescription>Total: {restaurantsList.length} restaurants partenaires</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {restaurantsList.map((restaurant) => (
+              <div key={restaurant.id} className="flex items-center justify-between border-b pb-2">
+                <div className="flex items-center space-x-3">
+                  <div className="font-medium">
+                    {restaurant.nom}
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Badge>{restaurant.cuisine}</Badge>
+                  <Badge variant="outline">{restaurant.ville}</Badge>
+                  <div className="flex space-x-2">
+                    <Button variant="outline" size="sm" onClick={() => handleEdit('restaurant', restaurant.id)}>
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="outline" size="sm" className="text-destructive">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Cette action ne peut pas être annulée. Voulez-vous vraiment supprimer ce restaurant ?
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Annuler</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => handleDelete('restaurant', restaurant.id)}>
+                            Confirmer
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 
@@ -498,6 +799,8 @@ const Dashboard = () => {
         return renderUtilisateursContent();
       case 'hotels':
         return renderHotelsContent();
+      case 'restaurants':
+        return renderRestaurantsContent();
       default:
         return renderDashboardContent();
     }
@@ -527,6 +830,16 @@ const Dashboard = () => {
                     >
                       <Home className="h-4 w-4" />
                       <span>Tableau de bord</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton 
+                      tooltip="Restaurants" 
+                      isActive={activeSection === 'restaurants'}
+                      onClick={() => setActiveSection('restaurants')}
+                    >
+                      <Utensils className="h-4 w-4" />
+                      <span>Restaurants</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
