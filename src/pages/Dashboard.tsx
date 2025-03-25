@@ -15,6 +15,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import AdminLogin from '@/components/AdminLogin';
 import { HotelFormDialog } from '@/components/HotelFormDialog';
+import { RestaurantFormDialog } from '@/components/RestaurantFormDialog';
 import { 
   AlertDialog,
   AlertDialogAction,
@@ -967,6 +968,16 @@ const Dashboard = () => {
     }
   };
   
+  // Get the editing hotel
+  const editingHotel = editingItemId 
+    ? hotelsList.find(hotel => hotel.id === editingItemId) 
+    : null;
+  
+  // Get the editing restaurant
+  const editingRestaurant = editingItemId 
+    ? restaurantsList.find(restaurant => restaurant.id === editingItemId) 
+    : null;
+  
   return (
     <>
       {!isAuthenticated ? (
@@ -1072,6 +1083,28 @@ const Dashboard = () => {
           </div>
         </SidebarProvider>
       )}
+      
+      {/* Formulaire pour les hôtels */}
+      {showHotelForm && (
+        <HotelFormDialog 
+          open={showHotelForm}
+          onOpenChange={setShowHotelForm}
+          onSubmit={handleAddHotel}
+          editingHotel={editingHotel}
+        />
+      )}
+      
+      {/* Formulaire pour les restaurants */}
+      {showRestaurantForm && (
+        <RestaurantFormDialog 
+          open={showRestaurantForm}
+          onOpenChange={setShowRestaurantForm}
+          onSubmit={handleAddRestaurant}
+          editingRestaurant={editingRestaurant}
+        />
+      )}
+      
+      {/* Formulaires pour les autres types d'entités pourraient être ajoutés ici */}
     </>
   );
 };
