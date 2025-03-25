@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
@@ -283,7 +284,7 @@ const Dashboard = () => {
     try {
       if (editingItemId) {
         setMatchesList(prev => prev.map(match => 
-          match.id === editingItemId ? { ...match, ...matchData } : match
+          match.id === editingItemId ? { ...match, ...matchData } as Match : match
         ));
         
         toast({
@@ -321,7 +322,7 @@ const Dashboard = () => {
     try {
       if (editingItemId) {
         setStadesList(prev => prev.map(stade => 
-          stade.id === editingItemId ? { ...stade, ...stadeData } : stade
+          stade.id === editingItemId ? { ...stade, ...stadeData } as Stade : stade
         ));
         
         toast({
@@ -359,7 +360,7 @@ const Dashboard = () => {
     try {
       if (editingItemId) {
         setEquipesList(prev => prev.map(equipe => 
-          equipe.id === editingItemId ? { ...equipe, ...equipeData } : equipe
+          equipe.id === editingItemId ? { ...equipe, ...equipeData } as Equipe : equipe
         ));
         
         toast({
@@ -1048,5 +1049,31 @@ const Dashboard = () => {
                       isActive={activeSection === 'hotels'}
                       onClick={() => setActiveSection('hotels')}
                     >
-                      <HotelIcon
+                      <HotelIcon className="h-4 w-4" />
+                      <span>Hotels</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </SidebarContent>
+              <SidebarFooter>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start gap-2"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Déconnexion</span>
+                </Button>
+              </SidebarFooter>
+            </Sidebar>
+            <div className="flex-1 p-8">
+              {renderContent()}
+            </div>
+          </div>
+        </SidebarProvider>
+      )}
+    </>
+  );
+};
 
+export default Dashboard;
