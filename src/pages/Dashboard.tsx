@@ -41,7 +41,6 @@ type NewHotelData = {
   telephone?: string;
 };
 
-// Définition des données de formulaire pour le type Match
 type NewMatchData = {
   equipe1: string;
   equipe2: string;
@@ -51,7 +50,6 @@ type NewMatchData = {
   phase: string;
 };
 
-// Définition des données de formulaire pour le type Stade
 type NewStadeData = {
   nom: string;
   ville: string;
@@ -61,7 +59,6 @@ type NewStadeData = {
   anneeConstruction: number;
 };
 
-// Définition des données de formulaire pour le type Equipe
 type NewEquipeData = {
   nom: string;
   drapeau: string;
@@ -69,14 +66,12 @@ type NewEquipeData = {
   confederation: string;
 };
 
-// Définition des données de formulaire pour le type Utilisateur
 type NewUserData = {
   username: string;
   password: string;
   role: string;
 };
 
-// Définition des données de formulaire pour le type Restaurant
 type NewRestaurantData = {
   nom: string;
   description: string;
@@ -93,7 +88,7 @@ type NewRestaurantData = {
 
 const Dashboard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [activeSection, setActiveSection] = useState<AdminSection>('dashboard');
+  const [activeSection, setActiveSection] = useState<AdminSection>('restaurants');
   const [showHotelForm, setShowHotelForm] = useState(false);
   const [showMatchForm, setShowMatchForm] = useState(false);
   const [showStadeForm, setShowStadeForm] = useState(false);
@@ -105,6 +100,7 @@ const Dashboard = () => {
   const [stadesList, setStadesList] = useState(stades);
   const [equipesList, setEquipesList] = useState(equipes);
   const [restaurantsList, setRestaurantsList] = useState(restaurants);
+  const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const { toast } = useToast();
   
   const data = [
@@ -135,7 +131,6 @@ const Dashboard = () => {
     }
   };
 
-  // Fonctions génériques pour la suppression des entités
   const handleDelete = (type: string, id: string) => {
     try {
       switch (type) {
@@ -170,78 +165,233 @@ const Dashboard = () => {
     }
   };
 
-  // Fonctions pour l'édition des entités (à implémenter plus tard)
   const handleEdit = (type: string, id: string) => {
+    setEditingItemId(id);
+    
+    switch (type) {
+      case 'match':
+        setShowMatchForm(true);
+        break;
+      case 'stade':
+        setShowStadeForm(true);
+        break;
+      case 'equipe':
+        setShowEquipeForm(true);
+        break;
+      case 'hotel':
+        setShowHotelForm(true);
+        break;
+      case 'restaurant':
+        setShowRestaurantForm(true);
+        break;
+      case 'user':
+        setShowUserForm(true);
+        break;
+    }
+    
     toast({
-      title: "Fonctionnalité à venir",
-      description: `L'édition de ${type} sera disponible prochainement.`,
+      title: "Édition en cours",
+      description: `Vous êtes en train d'éditer ${id}.`,
     });
   };
 
   const handleAddHotel = (hotelData: NewHotelData) => {
     try {
-      const newHotel = {
-        id: hotelData.nom.toLowerCase().replace(/\s+/g, '-'),
-        ...hotelData
-      };
-      
-      const updatedHotels = [...hotelsList, newHotel];
-      setHotelsList(updatedHotels);
-      
-      toast({
-        title: "Hôtel ajouté",
-        description: `L'hôtel ${hotelData.nom} a été ajouté avec succès.`,
-      });
+      if (editingItemId) {
+        setHotelsList(prev => prev.map(hotel => 
+          hotel.id === editingItemId ? { ...hotel, ...hotelData } : hotel
+        ));
+        
+        toast({
+          title: "Hôtel modifié",
+          description: `L'hôtel ${hotelData.nom} a été modifié avec succès.`,
+        });
+        
+        setEditingItemId(null);
+      } else {
+        const newHotel = {
+          id: hotelData.nom.toLowerCase().replace(/\s+/g, '-'),
+          ...hotelData
+        };
+        
+        setHotelsList(prev => [...prev, newHotel]);
+        
+        toast({
+          title: "Hôtel ajouté",
+          description: `L'hôtel ${hotelData.nom} a été ajouté avec succès.`,
+        });
+      }
       
       setShowHotelForm(false);
     } catch (error) {
       console.error('Error updating hotels list:', error);
       toast({
         title: "Erreur",
-        description: "Une erreur s'est produite lors de l'ajout de l'hôtel.",
+        description: "Une erreur s'est produite lors de l'opération.",
         variant: "destructive",
       });
     }
   };
 
-  const handleAddRestaurant = () => {
-    setShowRestaurantForm(false);
-    toast({
-      title: "Fonctionnalité à venir",
-      description: "L'ajout de restaurant sera disponible prochainement.",
-    });
+  const handleAddRestaurant = (restaurantData: NewRestaurantData) => {
+    try {
+      if (editingItemId) {
+        setRestaurantsList(prev => prev.map(restaurant => 
+          restaurant.id === editingItemId ? { ...restaurant, ...restaurantData } : restaurant
+        ));
+        
+        toast({
+          title: "Restaurant modifié",
+          description: `Le restaurant ${restaurantData.nom} a été modifié avec succès.`,
+        });
+        
+        setEditingItemId(null);
+      } else {
+        const newRestaurant = {
+          id: restaurantData.nom.toLowerCase().replace(/\s+/g, '-'),
+          ...restaurantData
+        };
+        
+        setRestaurantsList(prev => [...prev, newRestaurant]);
+        
+        toast({
+          title: "Restaurant ajouté",
+          description: `Le restaurant ${restaurantData.nom} a été ajouté avec succès.`,
+        });
+      }
+      
+      setShowRestaurantForm(false);
+    } catch (error) {
+      console.error('Error updating restaurants list:', error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur s'est produite lors de l'opération.",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleAddMatch = () => {
-    setShowMatchForm(false);
-    toast({
-      title: "Fonctionnalité à venir",
-      description: "L'ajout de match sera disponible prochainement.",
-    });
+  const handleAddMatch = (matchData: NewMatchData) => {
+    try {
+      if (editingItemId) {
+        setMatchesList(prev => prev.map(match => 
+          match.id === editingItemId ? { ...match, ...matchData } : match
+        ));
+        
+        toast({
+          title: "Match modifié",
+          description: `Le match a été modifié avec succès.`,
+        });
+        
+        setEditingItemId(null);
+      } else {
+        const newMatch = {
+          id: `match-${Date.now()}`,
+          ...matchData
+        };
+        
+        setMatchesList(prev => [...prev, newMatch]);
+        
+        toast({
+          title: "Match ajouté",
+          description: `Le match a été ajouté avec succès.`,
+        });
+      }
+      
+      setShowMatchForm(false);
+    } catch (error) {
+      console.error('Error updating matches list:', error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur s'est produite lors de l'opération.",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleAddStade = () => {
-    setShowStadeForm(false);
-    toast({
-      title: "Fonctionnalité à venir",
-      description: "L'ajout de stade sera disponible prochainement.",
-    });
+  const handleAddStade = (stadeData: NewStadeData) => {
+    try {
+      if (editingItemId) {
+        setStadesList(prev => prev.map(stade => 
+          stade.id === editingItemId ? { ...stade, ...stadeData } : stade
+        ));
+        
+        toast({
+          title: "Stade modifié",
+          description: `Le stade ${stadeData.nom} a été modifié avec succès.`,
+        });
+        
+        setEditingItemId(null);
+      } else {
+        const newStade = {
+          id: stadeData.nom.toLowerCase().replace(/\s+/g, '-'),
+          ...stadeData
+        };
+        
+        setStadesList(prev => [...prev, newStade]);
+        
+        toast({
+          title: "Stade ajouté",
+          description: `Le stade ${stadeData.nom} a été ajouté avec succès.`,
+        });
+      }
+      
+      setShowStadeForm(false);
+    } catch (error) {
+      console.error('Error updating stades list:', error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur s'est produite lors de l'opération.",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleAddEquipe = () => {
-    setShowEquipeForm(false);
-    toast({
-      title: "Fonctionnalité à venir",
-      description: "L'ajout d'équipe sera disponible prochainement.",
-    });
+  const handleAddEquipe = (equipeData: NewEquipeData) => {
+    try {
+      if (editingItemId) {
+        setEquipesList(prev => prev.map(equipe => 
+          equipe.id === editingItemId ? { ...equipe, ...equipeData } : equipe
+        ));
+        
+        toast({
+          title: "Équipe modifiée",
+          description: `L'équipe ${equipeData.nom} a été modifiée avec succès.`,
+        });
+        
+        setEditingItemId(null);
+      } else {
+        const newEquipe = {
+          id: equipeData.nom.toLowerCase().replace(/\s+/g, '-'),
+          ...equipeData
+        };
+        
+        setEquipesList(prev => [...prev, newEquipe]);
+        
+        toast({
+          title: "Équipe ajoutée",
+          description: `L'équipe ${equipeData.nom} a été ajoutée avec succès.`,
+        });
+      }
+      
+      setShowEquipeForm(false);
+    } catch (error) {
+      console.error('Error updating equipes list:', error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur s'est produite lors de l'opération.",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleAddUser = () => {
+  const handleAddUser = (userData: NewUserData) => {
     setShowUserForm(false);
     toast({
-      title: "Fonctionnalité à venir",
-      description: "L'ajout d'utilisateur sera disponible prochainement.",
+      title: "Utilisateur ajouté",
+      description: `L'utilisateur ${userData.username} a été ajouté avec succès.`,
     });
+    setEditingItemId(null);
   };
 
   const renderDashboardContent = () => (
@@ -727,7 +877,10 @@ const Dashboard = () => {
           <h1 className="text-3xl font-bold tracking-tight">Restaurants</h1>
           <p className="text-muted-foreground">Gestion des restaurants partenaires</p>
         </div>
-        <Button onClick={() => setShowRestaurantForm(true)}>
+        <Button onClick={() => {
+          setEditingItemId(null);
+          setShowRestaurantForm(true);
+        }}>
           <Plus className="mr-2 h-4 w-4" /> Ajouter un restaurant
         </Button>
       </div>
@@ -823,22 +976,22 @@ const Dashboard = () => {
                 <SidebarMenu>
                   <SidebarMenuItem>
                     <SidebarMenuButton 
-                      tooltip="Tableau de bord" 
-                      isActive={activeSection === 'dashboard'}
-                      onClick={() => setActiveSection('dashboard')}
-                    >
-                      <Home className="h-4 w-4" />
-                      <span>Tableau de bord</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton 
                       tooltip="Restaurants" 
                       isActive={activeSection === 'restaurants'}
                       onClick={() => setActiveSection('restaurants')}
                     >
                       <Utensils className="h-4 w-4" />
                       <span>Restaurants</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton 
+                      tooltip="Tableau de bord" 
+                      isActive={activeSection === 'dashboard'}
+                      onClick={() => setActiveSection('dashboard')}
+                    >
+                      <Home className="h-4 w-4" />
+                      <span>Tableau de bord</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
@@ -919,14 +1072,167 @@ const Dashboard = () => {
         </SidebarProvider>
       )}
 
-      {/* Dialog forms pour ajouter de nouveaux éléments */}
       <HotelFormDialog 
         open={showHotelForm} 
         onOpenChange={setShowHotelForm} 
-        onSubmit={handleAddHotel} 
+        onSubmit={handleAddHotel}
+        editingHotel={editingItemId ? hotelsList.find(h => h.id === editingItemId) || null : null}
       />
       
-      {/* Ici, des formulaires similaires seraient ajoutés pour les autres entités */}
+      {showRestaurantForm && (
+        <AlertDialog open={showRestaurantForm} onOpenChange={setShowRestaurantForm}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{editingItemId ? "Modifier le restaurant" : "Ajouter un restaurant"}</AlertDialogTitle>
+              <AlertDialogDescription>
+                {editingItemId 
+                  ? "Modifiez les détails du restaurant existant."
+                  : "Remplissez les informations pour ajouter un nouveau restaurant."}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Annuler</AlertDialogCancel>
+              <AlertDialogAction onClick={() => {
+                const mockData: NewRestaurantData = {
+                  nom: editingItemId ? restaurantsList.find(r => r.id === editingItemId)?.nom || "Nouveau Restaurant" : "Nouveau Restaurant",
+                  description: "Description du restaurant",
+                  cuisine: "Marocaine",
+                  prixMoyen: "200-300 MAD",
+                  adresse: "Adresse du restaurant",
+                  distance: "10 minutes du stade",
+                  note: 4.5,
+                  image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=2070&auto=format&fit=crop",
+                  stadeId: "complexe-mohamed-v",
+                  horaires: "Tous les jours de 12h à 23h",
+                  telephone: "+212 522 123 456"
+                };
+                handleAddRestaurant(mockData);
+              }}>
+                {editingItemId ? "Modifier" : "Ajouter"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+
+      {showMatchForm && (
+        <AlertDialog open={showMatchForm} onOpenChange={setShowMatchForm}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{editingItemId ? "Modifier le match" : "Ajouter un match"}</AlertDialogTitle>
+              <AlertDialogDescription>
+                {editingItemId 
+                  ? "Modifiez les détails du match existant."
+                  : "Remplissez les informations pour ajouter un nouveau match."}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Annuler</AlertDialogCancel>
+              <AlertDialogAction onClick={() => {
+                const mockData: NewMatchData = {
+                  equipe1: "Maroc",
+                  equipe2: "Sénégal",
+                  date: "2025-01-15",
+                  heure: "20:00",
+                  stade: "Complexe Sportif Mohammed V",
+                  phase: "Phase de groupes"
+                };
+                handleAddMatch(mockData);
+              }}>
+                {editingItemId ? "Modifier" : "Ajouter"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+
+      {showStadeForm && (
+        <AlertDialog open={showStadeForm} onOpenChange={setShowStadeForm}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{editingItemId ? "Modifier le stade" : "Ajouter un stade"}</AlertDialogTitle>
+              <AlertDialogDescription>
+                {editingItemId 
+                  ? "Modifiez les détails du stade existant."
+                  : "Remplissez les informations pour ajouter un nouveau stade."}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Annuler</AlertDialogCancel>
+              <AlertDialogAction onClick={() => {
+                const mockData: NewStadeData = {
+                  nom: "Nouveau Stade",
+                  ville: "Casablanca",
+                  capacite: 60000,
+                  image: "https://images.unsplash.com/photo-1509719782226-44d588b0d574?q=80&w=2070&auto=format&fit=crop",
+                  description: "Un nouveau stade moderne",
+                  anneeConstruction: 2023
+                };
+                handleAddStade(mockData);
+              }}>
+                {editingItemId ? "Modifier" : "Ajouter"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+
+      {showEquipeForm && (
+        <AlertDialog open={showEquipeForm} onOpenChange={setShowEquipeForm}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{editingItemId ? "Modifier l'équipe" : "Ajouter une équipe"}</AlertDialogTitle>
+              <AlertDialogDescription>
+                {editingItemId 
+                  ? "Modifiez les détails de l'équipe existante."
+                  : "Remplissez les informations pour ajouter une nouvelle équipe."}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Annuler</AlertDialogCancel>
+              <AlertDialogAction onClick={() => {
+                const mockData: NewEquipeData = {
+                  nom: "Nouvelle Équipe",
+                  drapeau: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Flag_of_Morocco.svg/800px-Flag_of_Morocco.svg.png",
+                  groupe: "A",
+                  confederation: "CAF"
+                };
+                handleAddEquipe(mockData);
+              }}>
+                {editingItemId ? "Modifier" : "Ajouter"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+
+      {showUserForm && (
+        <AlertDialog open={showUserForm} onOpenChange={setShowUserForm}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{editingItemId ? "Modifier l'utilisateur" : "Ajouter un utilisateur"}</AlertDialogTitle>
+              <AlertDialogDescription>
+                {editingItemId 
+                  ? "Modifiez les détails de l'utilisateur existant."
+                  : "Remplissez les informations pour ajouter un nouvel utilisateur."}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Annuler</AlertDialogCancel>
+              <AlertDialogAction onClick={() => {
+                const mockData: NewUserData = {
+                  username: "nouvel_admin",
+                  password: "********",
+                  role: "admin"
+                };
+                handleAddUser(mockData);
+              }}>
+                {editingItemId ? "Modifier" : "Ajouter"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
     </>
   );
 };
